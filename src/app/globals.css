@@ -1,127 +1,291 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
-
-@custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
-  --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --color-ink: #0b0614;
+  --color-ink-2: #1e1033;
+  --color-paper: #ffffff;
+  --color-line: rgba(192, 132, 252, 0.14);
+  --color-muted: rgba(233, 213, 255, 0.72);
+  --color-violet: #a855f7;
+  --color-fuchsia: #d946ef;
+  --color-lavender: #e9d5ff;
+  --font-display: var(--font-oswald), "Arial Narrow", sans-serif;
+  --font-body: var(--font-onest), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-logo: var(--font-coda), sans-serif;
+  --font-pixel: var(--font-press-start), var(--font-plex-mono), monospace;
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Signature accent (PcWizard_uz promo): violet → fuchsia → pink */
+  --accent-gradient: radial-gradient(68% 2765% at 6% 50%, rgb(124,58,237) 15%, rgb(147,51,234) 35%, rgb(217,70,239) 70%);
+  --accent-gradient-x: linear-gradient(90deg, rgb(124,58,237) 0%, rgb(147,51,234) 45%, rgb(217,70,239) 100%);
+  /* Grain texture (own SVG noise, used as overlay) */
+  --noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  /* Shared layout measures (desktop): 1100 content frame, 730 centre frame */
+  --frame: 1100px;
+  --frame-inner: 730px;
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+html {
+  background: #0b0614;
+  color: #ffffff;
+  font-family: var(--font-onest), system-ui, sans-serif;
+  scroll-behavior: smooth;
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+body {
+  margin: 0;
+  overflow-x: clip;
+  background: #0b0614;
+}
+
+/* Neon glow on display headings, as on the promo banner */
+.font-display {
+  text-shadow:
+    0 0 18px rgba(168, 85, 247, 0.55),
+    0 0 42px rgba(217, 70, 239, 0.25);
+}
+
+.on-light .font-display {
+  text-shadow: none;
+}
+
+/* Logo-style lettering: soft white → lavender → violet fill, with a magenta rim,
+   a deep violet outline/extrusion and a violet neon glow behind it (as on the PcWizard_uz logo).
+   The outline layers are pseudo-elements fed by data-text, painted under the fill:
+   the element itself must not create a stacking context (no filter/transform/z-index). */
+.neon-fill {
+  position: relative;
+  background: linear-gradient(180deg, #ffffff 0%, #fdf8ff 38%, #eed6ff 52%, #d9a4ff 72%, #c06bff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+}
+
+.neon-fill[data-text]::before,
+.neon-fill[data-text]::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.neon-fill[data-text]::before {
+  color: #2e0a7a;
+  -webkit-text-stroke: 0.07em #2e0a7a;
+  transform: translateY(0.035em);
+  text-shadow:
+    0 0 0.08em rgba(46, 10, 122, 1),
+    0 0 0.3em rgba(109, 40, 217, 0.75),
+    0 0 0.7em rgba(91, 33, 182, 0.5);
+}
+
+.neon-fill[data-text]::after {
+  color: #8b2fe0;
+  -webkit-text-stroke: 0.035em #8b2fe0;
+}
+
+::selection {
+  background: #a855f7;
+  color: #ffffff;
+}
+
+/* Grain overlay used on every dark section */
+.noise {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background-image: var(--noise);
+  background-size: 256px 256px;
+  opacity: 0.1;
+  mix-blend-mode: overlay;
+}
+
+/* Infinite horizontal marquee: the track contains the items twice */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
   }
-  body {
-    @apply bg-background font-sans text-foreground;
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration, 30s) linear infinite;
+}
+
+.marquee-track[data-reverse="true"] {
+  animation-direction: reverse;
+}
+
+/* Elements that reveal when scrolled into view */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  filter: blur(6px);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+@keyframes cube-spin {
+  from {
+    transform: rotateX(-28deg) rotateY(0deg);
+  }
+  to {
+    transform: rotateX(-28deg) rotateY(360deg);
+  }
+}
+
+/* Pixel arrows inside KeyButton: shift one chevron period (3 cells × 3px) in 3 one-cell steps, looping */
+@keyframes pixel-march {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(9px);
+  }
+}
+
+.pixel-march {
+  animation: pixel-march 0.3s steps(3) infinite;
+}
+
+/* Floating pixel sparkles in the hero: drift on the wrapper, twinkle on the glyph */
+@keyframes star-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(var(--dx, 0px), var(--dy, -24px));
+  }
+}
+
+@keyframes star-twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.75);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.star-drift {
+  animation: star-drift var(--drift, 9s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+.star-twinkle {
+  animation: star-twinkle var(--twinkle, 2.4s) steps(4) infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* Hero PC: slow hover */
+@keyframes pc-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.pc-float {
+  animation: pc-float 6s ease-in-out infinite;
+}
+
+/* Hero terminal: each claim types in left to right, the cursor blinks */
+@keyframes type-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.type-line {
+  animation: type-in 0.45s steps(18, end) both;
+}
+
+/* Hero games card: values light up one by one */
+@keyframes seg-on {
+  from {
+    opacity: 0.08;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.stat-seg {
+  animation: seg-on 0.01s both;
+}
+
+/* Achievement toast: pops up from below in pixel steps */
+@keyframes achievement-in {
+  from {
+    transform: translateY(140%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.achievement {
+  animation: achievement-in 0.35s steps(5, end) both;
+}
+
+.pixel-cursor {
+  animation: pixel-blink 1s steps(1, end) infinite;
+}
+
+@keyframes pixel-blink {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .marquee-track {
+    animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }

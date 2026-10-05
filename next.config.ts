@@ -1,14 +1,10 @@
 import type { NextConfig } from "next";
-import createNextIntlPlugin from "next-intl/plugin";
-
-const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
-  experimental: {
-    // app/[locale]/layout.tsx — корневой layout, поэтому 404 для адресов
-    // без языка рендерит app/global-not-found.tsx
-    globalNotFound: true,
-  },
+  output: "standalone",
+  // Let phones on the local network open the dev server (http://192.168.x.x:3000):
+  // without this Next blocks /_next dev resources and the page loads with no JS.
+  allowedDevOrigins: ["192.168.0.122", "192.168.*.*"],
 };
 
-export default withNextIntl(nextConfig);
+export default nextConfig;
