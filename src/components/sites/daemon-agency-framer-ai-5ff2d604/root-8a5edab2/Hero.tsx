@@ -3,7 +3,6 @@ import { site } from "@/lib/site";
 import { PixelField } from "../shared/PixelField";
 import { PixelStars } from "../shared/PixelStars";
 import { KeyButton } from "../shared/primitives";
-import { PixelDissolve } from "../shared/PixelDissolve";
 import { hero } from "./content";
 
 // 13×11 pixel Telegram plane (rasterised from the logo shape): body, fold line, lower flap.
@@ -44,8 +43,7 @@ function TelegramKey({ label }: { label: string }) {
 
 // Where the photo breaks into pixels: on phones it sits on top and dissolves downward,
 // on desktop it fills the right side and dissolves toward the text on the left.
-const DISSOLVE = { top: 0.12, bottom: 0.5 };
-const DISSOLVE_LG = { left: 0.5, top: 0.14, bottom: 0.3 };
+const PHOTO_COVER = { selector: "[data-pixel-cover]", edges: { top: 0.22, bottom: 0.5 }, edgesLg: { left: 0.5, top: 0.14, bottom: 0.3 } };
 
 /**
  * First screen as a poster: a real RGB build photo on the right breaking into pixels,
@@ -53,12 +51,10 @@ const DISSOLVE_LG = { left: 0.5, top: 0.14, bottom: 0.3 };
  */
 export function Hero() {
   return (
-    <section id="hero" className="relative flex min-h-[100svh] flex-col overflow-hidden md:min-h-[820px]">
+    <section id="hero" className="relative flex min-h-[100svh] flex-col overflow-hidden md:min-h-[max(100svh,760px)]">
       <div aria-hidden="true" className="absolute inset-0 bg-ink" />
-      <PixelField className="absolute inset-0 z-[1]" start={0.2} density={0.45} fade={0.3} />
-
       {/* Photo: Sebastian Ramirez, Unsplash (Unsplash License) — unsplash.com/photos/lErhwnuav_I */}
-      <div className="absolute inset-x-0 top-0 z-[1] h-[62svh] lg:inset-y-0 lg:right-0 lg:left-auto lg:h-auto lg:w-[60%]">
+      <div data-pixel-cover className="absolute inset-x-0 top-16 z-[1] h-[58svh] lg:inset-y-0 lg:right-0 lg:left-auto lg:h-auto lg:w-[60%]">
         <Image
           src="/images/hero-build.webp"
           alt=""
@@ -67,11 +63,12 @@ export function Hero() {
           sizes="(min-width: 1024px) 60vw, 100vw"
           className="object-cover object-[60%_30%] lg:object-[50%_40%]"
         />
-        <PixelDissolve edges={DISSOLVE} edgesLg={DISSOLVE_LG} className="absolute inset-0 size-full" />
       </div>
+      {/* Field over the photo: it also breaks the photo's edges into pixels and carries the cursor waves across it */}
+      <PixelField className="absolute inset-0 z-[1]" start={0.2} density={0.45} fade={0.3} cover={PHOTO_COVER} />
       <PixelStars className="z-[1]" />
 
-      <div className="relative z-[2] mx-auto flex w-full max-w-[1180px] flex-1 flex-col justify-end px-5 pt-[44svh] pb-10 md:px-10 lg:pt-36 lg:pb-14">
+      <div className="relative z-[2] mx-auto flex w-full max-w-[1180px] flex-1 flex-col justify-end px-5 pt-24 pb-8 md:px-10 lg:pt-36 lg:pb-14">
         <h1 className="metal-text font-headline text-[15vw] leading-[0.9] font-[850] tracking-[-0.01em] uppercase [font-variation-settings:'wdth'_55] sm:text-[13vw] lg:text-[min(10.4vw,134px)] lg:[font-variation-settings:'wdth'_100]">
           {hero.h1Lines.map((line, i) => (
             <span key={line} className={i ? "block lg:pl-[0.6em]" : "block"}>
@@ -81,7 +78,7 @@ export function Hero() {
           ))}
         </h1>
 
-        <div className="mt-8 grid gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end lg:mt-12 xl:grid-cols-[minmax(0,1fr)_auto_auto] xl:gap-14">
+        <div className="mt-6 grid gap-6 md:mt-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-8 lg:mt-12 xl:grid-cols-[minmax(0,1fr)_auto_auto] xl:gap-14">
           {/* Key promises as a pixel bullet list */}
           <ul className="flex flex-col gap-3.5">
             {hero.trust.map((t) => (
@@ -92,9 +89,9 @@ export function Hero() {
             ))}
           </ul>
 
-          <p className="flex flex-col gap-1">
+          <p className="flex items-baseline gap-3 md:flex-col md:items-start md:gap-1">
             <span className="text-[15px] text-white/60">{hero.priceFrom.label}</span>
-            <span className="font-headline text-[40px] leading-none font-[800] text-[#4ade80] uppercase [font-variation-settings:'wdth'_80] md:text-[48px]">
+            <span className="font-headline text-[34px] leading-none font-[800] text-[#4ade80] uppercase [font-variation-settings:'wdth'_80] md:text-[48px]">
               {hero.priceFrom.value}
             </span>
           </p>

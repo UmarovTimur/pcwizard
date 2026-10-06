@@ -18,6 +18,23 @@ interface Cell {
   speed: number;
 }
 
+/** How deep (share of the box) the photo dissolves in from each side; 0 = hard edge. */
+export interface DissolveEdges {
+  left?: number;
+  right?: number;
+  top?: number;
+  bottom?: number;
+}
+
+/** A photo under the field whose edges break into the same pixel grid. `edgesLg` applies from 1024px. */
+export interface PixelCover {
+  selector: string;
+  edges: DissolveEdges;
+  edgesLg?: DissolveEdges;
+}
+
+const INK = "rgb(11,6,20)"; // --color-ink
+
 interface Wave {
   x: number;
   y: number;
@@ -35,6 +52,9 @@ interface Wave {
  * `density`: multiplier for how many cells are lit (1 = default).
  * `fade`: share of the field at the dense edge over which pixels thin out and dim
  *   to nothing, so the field ends softly instead of at a hard edge (0 = no fade).
+ * `cover`: a photo inside the section (matched by `selector`) laid under the canvas. Its
+ *   edges are eaten by ink squares on the same grid, with field pixels twinkling among them,
+ *   and the cursor waves run across the photo too — so photo and field read as one surface.
  */
 export function PixelField({
   className,
@@ -42,14 +62,18 @@ export function PixelField({
   direction = "up",
   density = 1,
   fade = 0,
+  cover,
 }: {
   className?: string;
   start?: number;
   direction?: "up" | "down";
   density?: number;
   fade?: number;
+  cover?: PixelCover;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Compared by value, so a re-rendered parent passing an equal object doesn't rebuild the field.
+  const coverKey = JSON.stringify(cover ?? null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -58,7 +82,11 @@ export function PixelField({
     if (!canvas || !target || !ctx) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coverOpt = JSON.parse(coverKey) as PixelCover | null;
+    const coverEl = coverOpt ? target.querySelector<HTMLElement>(coverOpt.selector) : null;
     let cells: Cell[] = [];
+    let inks: { x: number; y: number }[] = []; // ink squares over the photo edges
+    let photo: { x: number; y: number }[] = []; // a sparse set of photo cells the cursor waves light up
     let width = 0;
     let height = 0;
     const waves: Wave[] = [];
@@ -99,6 +127,62 @@ export function PixelField({
           });
         }
       }
+      buildCover();
+    };
+
+    // Grid cells over the photo: solid ink near its edges thinning inward, a twinkling field
+    // pixel on some of them; field pixels over the clear part of the photo are dropped.
+    const buildCover = () => {
+      inks = [];
+      photo = [];
+      if (!coverOpt || !coverEl) return;
+      const box = coverEl.getBoundingClientRect();
+      const origin = canvas.getBoundingClientRect();
+      const bx = box.left - origin.left;
+      const by = box.top - origin.top;
+      const e = (window.matchMedia("(min-width: 1024px)").matches && coverOpt.edgesLg) || coverOpt.edges;
+      const side = (pos: number, size: number, share = 0) => (share > 0 ? Math.max(0, 1 - pos / (size * share)) : 0);
+      const ink = new Set<number>();
+      const cols = Math.ceil(width / CELL);
+      for (let r = Math.max(0, Math.floor(by / CELL)); r * CELL < by + box.height && r * CELL < height; r++)
+        for (let c = Math.max(0, Math.floor(bx / CELL)); c * CELL < bx + box.width && c < cols; c++) {
+          const x = c * CELL + CELL / 2 - bx;
+          const y = r * CELL + CELL / 2 - by;
+          if (x < 0 || y < 0 || x > box.width || y > box.height) continue;
+          const t = Math.max(side(x, box.width, e.left), side(box.width - x, box.width, e.right), side(y, box.height, e.top), side(box.height - y, box.height, e.bottom));
+          if (Math.random() < t ** 0.8) {
+            ink.add(r * cols + c);
+            inks.push({ x: c * CELL, y: r * CELL });
+            if (Math.random() < 0.3 * t)
+              cells.push({
+                x: c * CELL + (CELL - SIZE) / 2,
+                y: r * CELL + (CELL - SIZE) / 2,
+                depth: 0.35 + 0.5 * t,
+                fade: 1,
+                phase: Math.random() * Math.PI * 2,
+                speed: 0.0008 + Math.random() * 0.0028,
+              });
+          } else if (Math.random() < 0.35) photo.push({ x: c * CELL + (CELL - SIZE) / 2, y: r * CELL + (CELL - SIZE) / 2 });
+        }
+      const inBox = (cell: Cell) => cell.x + SIZE > bx && cell.x < bx + box.width && cell.y + SIZE > by && cell.y < by + box.height;
+      cells = cells.filter((cell) => !inBox(cell) || ink.has(Math.floor(cell.y / CELL) * cols + Math.floor(cell.x / CELL)));
+    };
+
+    // Total brightness the cursor adds at a point: expanding rings plus a glow under the pointer.
+    const boostAt = (cx: number, cy: number, now: number) => {
+      let boost = 0;
+      for (const w of waves) {
+        const age = now - w.t0;
+        const radius = age * WAVE_SPEED;
+        const d = Math.hypot(cx - w.x, cy - w.y);
+        const ring = Math.exp(-((d - radius) ** 2) / (WAVE_WIDTH * WAVE_WIDTH));
+        boost += ring * (1 - age / WAVE_LIFE);
+      }
+      if (pointer) {
+        const d = Math.hypot(cx - pointer.x, cy - pointer.y);
+        boost += 0.6 * Math.exp(-(d * d) / (70 * 70));
+      }
+      return boost;
     };
 
     const draw = (now: number) => {
@@ -106,6 +190,17 @@ export function PixelField({
       ctx.clearRect(0, 0, width, height);
 
       while (waves.length && now - waves[0].t0 > WAVE_LIFE) waves.shift();
+
+      ctx.fillStyle = INK;
+      for (const k of inks) ctx.fillRect(k.x, k.y, CELL, CELL);
+      // The waves cross the photo as a ring of pixels.
+      if (waves.length || pointer)
+        for (const p of photo) {
+          const a = Math.min(0.85, boostAt(p.x + SIZE / 2, p.y + SIZE / 2, now) * 0.6);
+          if (a < 0.03) continue;
+          ctx.fillStyle = `rgba(233,213,255,${a})`;
+          ctx.fillRect(p.x, p.y, SIZE, SIZE);
+        }
 
       for (const cell of cells) {
         // Base brightness: dim on the sparse side, bright on the dense edge.
@@ -116,20 +211,7 @@ export function PixelField({
         const tw = wave * wave * 1.35;
         let alpha = base * cell.fade * Math.max(0.04, tw);
 
-        let boost = 0;
-        const cx = cell.x + SIZE / 2;
-        const cy = cell.y + SIZE / 2;
-        for (const w of waves) {
-          const age = now - w.t0;
-          const radius = age * WAVE_SPEED;
-          const d = Math.hypot(cx - w.x, cy - w.y);
-          const ring = Math.exp(-((d - radius) ** 2) / (WAVE_WIDTH * WAVE_WIDTH));
-          boost += ring * (1 - age / WAVE_LIFE);
-        }
-        if (pointer) {
-          const d = Math.hypot(cx - pointer.x, cy - pointer.y);
-          boost += 0.6 * Math.exp(-(d * d) / (70 * 70));
-        }
+        const boost = boostAt(cell.x + SIZE / 2, cell.y + SIZE / 2, now);
         alpha = Math.min(1, alpha + boost * 0.9 * cell.fade);
         if (alpha < 0.02) continue;
 
@@ -167,6 +249,7 @@ export function PixelField({
       if (reduced && !frame) frame = requestAnimationFrame(draw);
     });
     ro.observe(canvas);
+    if (coverEl) ro.observe(coverEl);
     target.addEventListener("pointermove", onMove);
     target.addEventListener("pointerleave", onLeave);
 
@@ -188,7 +271,7 @@ export function PixelField({
       target.removeEventListener("pointermove", onMove);
       target.removeEventListener("pointerleave", onLeave);
     };
-  }, [start, direction, density, fade]);
+  }, [start, direction, density, fade, coverKey]);
 
   return <canvas ref={canvasRef} aria-hidden="true" className={cn("pointer-events-none block size-full", className)} />;
 }
