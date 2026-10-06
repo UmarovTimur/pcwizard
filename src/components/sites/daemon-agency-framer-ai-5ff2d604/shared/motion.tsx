@@ -61,15 +61,13 @@ export function Marquee({
 }) {
   return (
     <div className={cn("overflow-hidden", className)}>
-      <div
-        className="marquee-track"
-        data-reverse={reverse}
-        style={{ "--marquee-duration": `${duration}s`, gap } as React.CSSProperties}
-      >
-        <div className="flex shrink-0" style={{ gap }}>
+      {/* The track holds two identical copies and slides by exactly -50%. Each copy carries its
+          own trailing gap (padding), so copy + gap is exactly half the track: no jump at the loop. */}
+      <div className="marquee-track" data-reverse={reverse} style={{ "--marquee-duration": `${duration}s` } as React.CSSProperties}>
+        <div className="flex shrink-0" style={{ gap, paddingRight: gap }}>
           {children}
         </div>
-        <div className="flex shrink-0" style={{ gap }} aria-hidden="true">
+        <div className="flex shrink-0" style={{ gap, paddingRight: gap }} aria-hidden="true">
           {children}
         </div>
       </div>

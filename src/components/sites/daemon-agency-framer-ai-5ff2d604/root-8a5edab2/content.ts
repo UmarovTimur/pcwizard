@@ -11,26 +11,22 @@ export const nav = [
   { label: "Главная", href: "/" },
   { label: "Игровые ПК", href: "/igrovye-pk" },
   { label: "Сборка ПК", href: "/sborka-kompyutera" },
+  { label: "Портфолио", href: "/portfolio" },
   { label: "Цены", href: "/#pricing" },
   { label: "Блог", href: "/blog" },
   { label: "Контакты", href: "#contact" },
 ];
 
 export const hero = {
-  // H1 повторяет главный запрос «сборка ПК на заказ»; lines — он же, разбитый на строки.
+  // H1 повторяет главный запрос «сборка ПК на заказ».
   h1: "Сборка ПК на заказ",
-  lines: ["СБОРКА ПК", "НА ЗАКАЗ"],
-  // Игровое меню справа от ПК: ссылки на страницы услуг.
-  bullets: [
-    { label: "Игровые ПК", href: "/igrovye-pk" },
-    { label: "Комплектующие", href: "/komplektuyushchie" },
-    { label: "Апгрейд", href: "/apgreyd" },
-    { label: "Ремонт", href: "/#services" },
-  ],
-  cta: { label: "Как работаем", href: "#process" },
-  // Подзаголовок: короткие утверждения списком.
-  claims: ["Соберём ПК под ваш бюджет", "Тест под нагрузкой при вас", "Гарантия 30 дней", "Работаем по всему Узбекистану"],
-  pressStart: "Press start",
+  h1Lines: ["Сборка ПК", "на заказ"], // строки крупного заголовка (вместе = h1)
+  // Самая дешёвая сборка из портфолио — 4 044 000 сум (337 $).
+  priceFrom: { label: "Сборки от", value: "4 млн сум" },
+  cta: { label: "Подобрать сборку", href: "#contact" }, // открывает попап с заявкой
+  telegram: "Написать в Telegram",
+  // Главные обещания — пиксельным списком под заголовком.
+  trust: ["Гарантия 30 дней", "Тест под нагрузкой при вас", "Работаем по всему Узбекистану"],
 };
 
 export const services = {
@@ -65,30 +61,165 @@ export const capabilities = {
 };
 
 export const process = {
-  marquee: "КАК МЫ РАБОТАЕМ",
-  heading: "Как проходит сборка и тестирование",
+  marquee: "ОДНИ ИЗ САМЫХ НИЗКИХ ЦЕН НА РЫНКЕ",
+  heading: "Как проходит сборка и\u00a0тестирование",
+  // icon — пиксельная анимация шага (StepIcon)
   steps: [
-    { title: "Заявка", text: "Вы пишете, для чего нужен компьютер и на какой бюджет рассчитываете." },
-    { title: "Подбор", text: "Предлагаем конфигурацию и объясняем, за что вы платите в каждой детали." },
-    { title: "Сборка и тесты", text: "Собираем, аккуратно прокладываем кабели и проверяем систему под нагрузкой." },
-    { title: "Выдача", text: "Показываем компьютер в работе и отдаём с гарантией 30 дней." },
-  ],
+    { title: "Заявка", text: "Вы пишете, для чего нужен компьютер и на какой бюджет рассчитываете.", icon: "chat" },
+    { title: "Подбор", text: "Предлагаем конфигурацию и объясняем, за что вы платите в каждой детали.", icon: "pick" },
+    { title: "Сборка и\u00a0тесты", text: "Собираем, аккуратно прокладываем кабели и проверяем систему под нагрузкой.", icon: "test" },
+    { title: "Выдача", text: "Показываем компьютер в работе и отдаём с гарантией 30 дней.", icon: "shield" },
+  ] as { title: string; text: string; icon: "chat" | "pick" | "test" | "shield" }[],
   cta: { text: "Готовы обсудить ваш будущий компьютер?", label: "Оставить заявку", href: "#contact" },
 };
 
-export const works = {
+// Портфолио: реальные сборки PcWizard_uz (описания из постов в Telegram). Фото лежат в
+// public/images/products/<папка>; первое фото в списке — обложка.
+const shot = (folder: string, stamp: string, n: number) => `/images/products/${folder}/photo_${n}_${stamp}.jpg`;
+const shots = (folder: string, stamp: string, order: number[]) => order.map((n) => shot(folder, stamp, n));
+
+export interface Build {
+  slug: string;
+  /** Короткое имя сборки для карточек: «процессор + видеокарта». */
+  name: string;
+  /** H1 и заголовок страницы. */
+  title: string;
+  status: "sale" | "sold";
+  /** Цена: в долларах и сумах; old* — цена до скидки. */
+  price: { usd: number; uzs: number; oldUsd?: number; oldUzs?: number };
+  /** Короткие пометки для карточки. */
+  highlights: string[];
+  /** Одна фраза: подзаголовок страницы и description для поиска. */
+  summary: string;
+  description: string[];
+  specs: { part: string; value: string }[];
+  /** Монитор, периферия и подарки для комплектов. */
+  extras?: { title: string; items: string[] }[];
+  /** «Состояние», ПО и т. п. */
+  notes: string[];
+  photos: string[];
+}
+
+const ready = ["Все кабели в комплекте", "Драйверы установлены", "Windows 11 Pro 64-bit", "Counter-Strike 2 установлен", "Всё проверено и готово к работе"];
+
+export const works: { tag: string; heading: string; lead: string; all: { label: string; href: string }; projects: Build[] } = {
   tag: "Портфолио",
   heading: "Наши работы",
-  lead: "Каждый компьютер мы собираем под конкретную задачу: от тихого офисного ПК до мощной игровой станции. Листайте, чтобы посмотреть примеры.",
+  lead: "Компьютеры, которые мы собрали: в продаже и уже проданные. Нажмите на сборку, чтобы посмотреть фото, конфигурацию и цену.",
+  all: { label: "Все работы", href: "/portfolio" },
   projects: [
-    { name: "Игровой ПК", year: "2026" },
-    { name: "Рабочая станция", year: "2026" },
-    { name: "Стрим-сетап", year: "2025" },
-    { name: "Офисный ПК", year: "2025" },
-    { name: "Компактный ПК", year: "2025" },
-    { name: "Апгрейд", year: "2025" },
+    {
+      slug: "i5-12400f-rtx-2070-super",
+      name: "i5-12400F + RTX 2070 Super",
+      title: "Игровой ПК на i5-12400F и RTX 2070 Super",
+      status: "sold",
+      price: { usd: 600, uzs: 7_140_000 },
+      highlights: ["Core i5-12400F", "RTX 2070 Super 8 ГБ", "16 ГБ DDR4"],
+      summary: "Игровой компьютер на Intel Core i5-12400F и Palit RTX 2070 Super 8 ГБ: 16 ГБ памяти, NVMe SSD, Windows 11 и CS2 уже установлены.",
+      description: [
+        "Игровой компьютер на шестиядерном Intel Core i5-12400F и видеокарте Palit GeForce RTX 2070 Super JetStream 8 ГБ — для современных игр в Full HD на высоких настройках.",
+        "Корпус XTECH со стеклом и тремя ARGB-вентиляторами, память T-Force Delta R с подсветкой, блок питания DeepCool на 750 Вт с запасом под апгрейд. Поставили Windows 11 Pro, драйверы и Counter-Strike 2 — можно играть сразу после покупки.",
+      ],
+      specs: [
+        { part: "Процессор", value: "Intel Core i5-12400F" },
+        { part: "Видеокарта", value: "Palit GeForce RTX 2070 Super JetStream 8 ГБ" },
+        { part: "Материнская плата", value: "MSI H610M-E PRO" },
+        { part: "Оперативная память", value: "TeamGroup T-Force Delta R DDR4 16 ГБ (2×8), 3200 МГц" },
+        { part: "Накопитель", value: "M.2 NVMe SK Hynix 256 ГБ" },
+        { part: "Охлаждение", value: "Tower S40, 120 мм RGB, 4 тепловые трубки" },
+        { part: "Блок питания", value: "DeepCool PF750" },
+        { part: "Корпус", value: "XTECH, 3×120 мм ARGB" },
+      ],
+      notes: ["Состояние идеальное", "Гарантия 30 дней", ...ready],
+      photos: shots("1", "2026-10-06_03-30-49", [6, 7, 8, 1, 2, 3, 4, 5]),
+    },
+    {
+      slug: "i5-9400f-rx-590",
+      name: "i5-9400F + RX 590",
+      title: "Игровой ПК на i5-9400F и RX 590",
+      status: "sold",
+      price: { usd: 347, uzs: 4_130_000 },
+      highlights: ["Core i5-9400F", "Sapphire Nitro+ RX 590", "ASUS ROG Strix"],
+      summary: "Бюджетный игровой ПК на Intel Core i5-9400F и Sapphire Nitro+ RX 590 8 ГБ с платой ASUS ROG Strix и 16 ГБ памяти.",
+      description: [
+        "Бюджетный игровой компьютер для киберспорта и популярных игр в Full HD: Intel Core i5-9400F и Sapphire Nitro+ Radeon RX 590 8 ГБ на плате ASUS ROG Strix B360-G Gaming.",
+        "Память Patriot Viper Steel 3000 МГц, быстрый NVMe-накопитель Lexar и корпус GAMDIAS с пятью ARGB-вентиляторами. На фото задней стенки видно аккуратную укладку кабелей.",
+      ],
+      specs: [
+        { part: "Процессор", value: "Intel Core i5-9400F" },
+        { part: "Видеокарта", value: "Sapphire Nitro+ Radeon RX 590 8 ГБ" },
+        { part: "Материнская плата", value: "ASUS ROG Strix B360-G Gaming" },
+        { part: "Оперативная память", value: "Patriot Viper Steel DDR4 16 ГБ (2×8), 3000 МГц CL16" },
+        { part: "Накопитель", value: "M.2 NVMe Lexar NM620 256 ГБ" },
+        { part: "Охлаждение", value: "Tower S50, 120 мм RGB, 4 тепловые трубки" },
+        { part: "Блок питания", value: "Ocypus Beta P700, 700 Вт" },
+        { part: "Корпус", value: "GAMDIAS, 5×120 мм ARGB" },
+      ],
+      notes: ["Состояние идеальное", "Гарантия 30 дней"],
+      photos: shots("2", "2026-10-06_04-19-37", [6, 7, 3, 4, 5, 2, 1, 8]),
+    },
+    {
+      slug: "komplekt-i5-9400f-rx-580-monitor-144hz",
+      name: "Комплект: ПК + монитор 144 Гц",
+      title: "Игровой комплект: ПК на i5-9400F и RX 580 + монитор 144 Гц",
+      status: "sold",
+      price: { usd: 465, uzs: 5_333_500, oldUsd: 485, oldUzs: 5_771_500 },
+      highlights: ["i5-9400F + RX 580", "ASUS TUF 27\" 144 Гц", "Redragon + коврик"],
+      summary: "Всё для игр в одной покупке: ПК на i5-9400F и Sapphire Nitro+ RX 580, монитор ASUS TUF Gaming 27″ 144 Гц, беспроводной комплект Redragon и коврик в подарок.",
+      description: [
+        "Топовый бюджетный игровой комплект — всё рабочее место сразу: системный блок, монитор и периферия. Достаточно подключить и играть.",
+        "Компьютер на Intel Core i5-9400F и Sapphire Nitro+ Radeon RX 580 8 ГБ, монитор ASUS TUF Gaming 27″ с IPS-матрицей и частотой 144 Гц, беспроводные клавиатура и мышь Redragon с тремя режимами подключения. Большой коврик Redragon Flick 3XL — в подарок.",
+      ],
+      specs: [
+        { part: "Процессор", value: "Intel Core i5-9400F" },
+        { part: "Видеокарта", value: "Sapphire Nitro+ Radeon RX 580 8 ГБ" },
+        { part: "Материнская плата", value: "MSI B365M PRO" },
+        { part: "Оперативная память", value: "Crucial DDR4 16 ГБ (2×8), 2400 МГц" },
+        { part: "Накопитель", value: "SSD Apacer Panther 256 ГБ" },
+        { part: "Охлаждение", value: "Tower S50, 120 мм RGB, 4 тепловые трубки" },
+        { part: "Блок питания", value: "Zalman ZM600-LXII, 600 Вт, 80+" },
+        { part: "Корпус", value: "HOFTECH, 4×120 мм ARGB" },
+      ],
+      extras: [
+        { title: "Монитор ASUS TUF Gaming VG1R", items: ['Диагональ 27"', "Full HD 1920×1080", "IPS", "144 Гц", "Отклик 1 мс (MPRT)"] },
+        { title: "Redragon Gaming Essentials", items: ["Клавиатура и мышь", "3 режима: провод / 2.4 ГГц / Bluetooth", "Аккумулятор 4000 мАч", "RGB-подсветка"] },
+        { title: "Подарок: коврик Redragon Flick 3XL", items: ["1219×610×3 мм"] },
+      ],
+      notes: ["Гарантия 30 дней"],
+      photos: shots("3", "2026-10-06_04-20-08", [1, 3, 4, 5, 2, 9, 10, 8, 6, 7]),
+    },
+    {
+      slug: "i5-9400f-rx-580-rog-strix",
+      name: "i5-9400F + RX 580 ROG",
+      title: "Игровой ПК на i5-9400F и RX 580 с ASUS ROG Strix",
+      status: "sold",
+      price: { usd: 337, uzs: 4_044_000 },
+      highlights: ["Core i5-9400F", "RX 580 2304SP", "ASUS ROG Strix"],
+      summary: "Топовая бюджетная сборка: i5-9400F, Sapphire Nitro+ RX 580 2304SP, плата ASUS ROG Strix и корпус GameDias с пятью ARGB-вентиляторами.",
+      description: [
+        "Топовая бюджетная игровая сборка на Intel Core i5-9400F и Sapphire Nitro+ Radeon RX 580 8 ГБ в полной версии 2304SP. Карту проверили 30-минутным стресс-тестом FurMark — температура держалась на 75 °C.",
+        "Плата ASUS ROG Strix B360-G Gaming, память Patriot Viper Steel 3000 МГц, NVMe-накопитель Lexar. Корпус GameDias с пятью ARGB-вентиляторами — контроллер подсветки в комплекте.",
+      ],
+      specs: [
+        { part: "Процессор", value: "Intel Core i5-9400F" },
+        { part: "Видеокарта", value: "Sapphire Nitro+ Radeon RX 580 8 ГБ (2304SP)" },
+        { part: "Материнская плата", value: "ASUS ROG Strix B360-G Gaming" },
+        { part: "Оперативная память", value: "Patriot Viper Steel DDR4 16 ГБ (2×8), 3000 МГц CL16" },
+        { part: "Накопитель", value: "M.2 NVMe Lexar NM620 256 ГБ" },
+        { part: "Охлаждение", value: "Tower S50, 120 мм RGB, 4 тепловые трубки" },
+        { part: "Блок питания", value: "Ocypus Beta P700, 700 Вт" },
+        { part: "Корпус", value: "GameDias, 5×120 мм ARGB, контроллер в комплекте" },
+      ],
+      notes: ["Состояние отличное", "Гарантия 30 дней", "FurMark 30 мин — 75 °C", ...ready],
+      photos: shots("5", "2026-10-06_04-21-06", [6, 5, 7, 8, 2, 3, 4, 1]),
+    },
   ],
 };
+
+/** "600 $ · 7 140 000 сум" */
+export const formatBuildPrice = (p: { usd: number; uzs: number }) => `${p.usd} $ · ${new Intl.NumberFormat("ru-RU").format(p.uzs)} сум`;
+
+export const getBuild = (slug: string) => works.projects.find((b) => b.slug === slug);
 
 export const budgets = {
   tag: "Сколько стоит игровой ПК в 2026",
@@ -263,7 +394,7 @@ export const footer = {
     { label: "Апгрейд", href: "/apgreyd" },
     { label: "Цены", href: "/#pricing" },
     { label: "Блог", href: "/blog" },
-    { label: "Контакты", href: "#contact" },
+    { label: "Портфолио", href: "/portfolio" },
   ],
   socials: [
     { label: "Telegram", href: "https://t.me/PcWizard_uz" },

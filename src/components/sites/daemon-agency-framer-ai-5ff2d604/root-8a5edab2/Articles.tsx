@@ -43,7 +43,7 @@ export function Articles() {
         <span className="absolute inset-y-0 left-[calc(50%+365px)] w-px bg-line" />
       </div>
       <div className="w-full pt-[70px]">
-        <BigMarquee text={articles.marquee} heading={articles.heading} duration={16} />
+        <BigMarquee text={articles.marquee} heading={articles.heading} duration={20} size="md" />
       </div>
 
       <ul className="relative z-[2] grid w-full border-t border-line px-5 md:w-[1100px] md:grid-cols-3 md:px-0">

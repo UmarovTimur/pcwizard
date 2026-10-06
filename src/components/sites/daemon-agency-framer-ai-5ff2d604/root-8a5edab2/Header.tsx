@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Phone } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { FpsCounter } from "../shared/FpsCounter";
@@ -36,38 +35,36 @@ export function Header() {
 
   return (
     <>
-      {/* Fixed layer: live FPS readout on the left (desktop), logo in the centre */}
+      {/* Fixed layer: logo on the left, live FPS readout next to it (desktop) */}
       <div className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center pt-[14px]">
-        <div className="relative flex h-12 w-full max-w-[1180px] items-center px-5 md:h-[52px] md:px-10">
-          {/* Game-HUD readout with the page's real frame rate */}
-          <FpsCounter className="-ml-3 hidden rounded-lg bg-ink/60 px-3 py-2 backdrop-blur-sm md:flex" />
+        <div className="flex h-12 w-full max-w-[1180px] items-center px-5 md:h-[52px] md:px-10">
           {/* Dark backing keeps the transparent-edged logo readable over the light section */}
           <Link
             href="/"
-            className="pointer-events-auto absolute top-0 left-1/2 block -translate-x-1/2 rounded-lg bg-ink/60 px-2 backdrop-blur-sm"
+            className="pointer-events-auto -ml-2 block rounded-lg bg-ink/60 px-2 backdrop-blur-sm"
             aria-label={`${brand.name} — на главную`}
           >
             <Image src="/brand/logo.png" alt={brand.name} width={366} height={160} priority className="h-12 w-auto md:h-[52px]" />
           </Link>
+          {/* Game-HUD readout with the page's real frame rate */}
+          <FpsCounter className="ml-4 hidden rounded-lg bg-ink/60 px-3 py-2 backdrop-blur-sm md:flex" />
         </div>
       </div>
 
-      {/* Phone: at the top of the page, but scrolls away (not fixed). Desktop: number left of the
-          menu button; mobile: a call button on the left (no room beside the centred logo). */}
+      {/* Phone: at the top of the page, between logo and menu button, but scrolls away (not fixed) */}
       {/* Same row box as the logo (pt-14 + 48/52px), so it lines up with the logo and the menu button */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-50 flex justify-center pt-[14px]">
-        <div className="flex h-12 w-full max-w-[1180px] items-center justify-start px-5 md:h-[52px] md:justify-end md:px-10 md:pr-[85px]">
+        <div className="flex h-12 w-full max-w-[1180px] items-center justify-end px-5 pr-[62px] md:h-[52px] md:px-10 md:pr-[85px]">
           <a
             href={`tel:${footer.phone.replace(/\s/g, "")}`}
             aria-label={`Позвонить: ${footer.phone}`}
-            className="group pointer-events-auto flex items-center gap-2.5 font-pixel text-[12px] leading-[18px] whitespace-nowrap text-white transition-colors hover:text-lavender max-md:-ml-2 max-md:size-10 max-md:justify-center max-md:rounded-lg max-md:bg-ink/60 max-md:backdrop-blur-sm md:py-2"
+            className="group pointer-events-auto flex items-center gap-2.5 py-2 font-pixel text-[9px] leading-[18px] whitespace-nowrap text-white transition-colors hover:text-lavender md:text-[12px]"
           >
-            <span aria-hidden="true" className="relative flex size-2 max-md:hidden">
+            <span aria-hidden="true" className="relative flex size-2">
               <span className="absolute inset-0 animate-ping bg-[#4ade80] opacity-60" />
               <span className="relative size-2 bg-[#4ade80]" />
             </span>
-            <Phone aria-hidden="true" className="size-5 text-[#4ade80] md:hidden" strokeWidth={2} />
-            <span className="max-md:hidden">{footer.phone}</span>
+            {footer.phone}
           </a>
         </div>
       </div>

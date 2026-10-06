@@ -122,7 +122,7 @@ export function KeyButton({ href, children, tone = "white", className }: ButtonP
       className={cn(
         "group relative inline-flex h-14 w-fit cursor-pointer overflow-hidden",
         tone === "accent"
-          ? "shadow-[0_0_24px_rgba(168,85,247,0.55),0_0_60px_rgba(217,70,239,0.3),0_10px_8px_-1px_rgba(0,0,0,0.35)] transition-shadow duration-300 hover:shadow-[0_0_32px_rgba(168,85,247,0.8),0_0_80px_rgba(217,70,239,0.45),0_10px_8px_-1px_rgba(0,0,0,0.35)]"
+          ? "shadow-[0_0_14px_rgba(168,85,247,0.3),0_10px_8px_-1px_rgba(0,0,0,0.35)] transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(168,85,247,0.5),0_10px_8px_-1px_rgba(0,0,0,0.35)]"
           : "shadow-[0_0.72px_0.29px_-0.17px_rgba(84,84,84,0.06),0_2px_0.8px_-0.33px_rgba(84,84,84,0.11),0_5px_2px_-0.5px_rgba(84,84,84,0.15),0_10px_8px_-1px_rgba(0,0,0,0.25)]",
         "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white",
         className,

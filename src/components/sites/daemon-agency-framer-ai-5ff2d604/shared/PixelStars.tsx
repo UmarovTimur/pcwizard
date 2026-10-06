@@ -83,7 +83,7 @@ function Sparkle({ className }: { className?: string }) {
 export function PixelStars({ className, seed, count = 12 }: { className?: string; seed?: number; count?: number }) {
   const sparkles = seed === undefined ? HERO_SPARKLES : scatter(seed, count);
   return (
-    <div aria-hidden="true" className={cn("pointer-events-none absolute inset-0", className)}>
+    <div aria-hidden="true" className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}>
       {sparkles.map((s, i) => (
         <span
           key={i}

@@ -2,13 +2,12 @@
 
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Cross, Noise, Placeholder, Tag } from "../shared/primitives";
+import { Cross, KeyButton, Noise, Tag } from "../shared/primitives";
 import { Reveal } from "../shared/motion";
+import { BuildCard } from "./BuildCard";
 import { works } from "./content";
 
-const CARD = 550;
-
-/** Click-driven carousel: arrows move the track one 550px card at a time. */
+/** Portfolio carousel of real builds: arrows move the track one card at a time (550px; full width on mobile); a card links to its build page. */
 export function Works() {
   const [index, setIndex] = useState(0);
   const count = works.projects.length;
@@ -53,25 +52,26 @@ export function Works() {
       {/* Track: card 0 of the middle copy aligns with the left edge of the 1100 frame */}
       <div className="relative z-[2] w-full overflow-hidden">
         <ul
-          className="flex transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)]"
-          style={{ transform: `translateX(calc(max(20px, 50% - 550px) - ${(count + index) * CARD}px))` }}
+          className="flex transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] [--card:calc(100vw-40px)] md:[--card:550px]"
+          style={{ transform: `translateX(calc(max(20px, 50% - 550px) - ${count + index} * var(--card)))` }}
         >
           {loop.map((p, i) => (
-            <li key={i} className="relative h-[472px] w-[550px] shrink-0 max-md:h-[360px] max-md:w-[calc(100vw-40px)]" aria-hidden={i < count || i >= count * 2}>
-              <a href="#works" className="group relative flex size-full flex-col items-center justify-between overflow-hidden p-[30px]">
-                <Placeholder label={`Фото сборки ${(i % count) + 1}`} tone={i % 2 ? "dark" : "mid"} className="absolute inset-0 transition-transform duration-700 group-hover:scale-105" />
-                <span className="relative z-[2] font-pixel text-[10px] leading-[20.8px]">{p.year}</span>
-                <span aria-hidden="true" className="relative z-[2] flex size-[90px] items-center justify-center border border-white/30 font-mono text-[10px] text-white/60 uppercase">
-                  Лого
-                </span>
-                <span className="relative z-[2] flex w-[285px] justify-center bg-black/50 px-3 py-1 font-pixel text-[10px] leading-[20.8px] uppercase backdrop-blur-sm">
-                  {p.name}
-                </span>
-              </a>
+            <li key={i} className="relative h-[472px] w-[var(--card)] shrink-0 max-md:h-[420px]" aria-hidden={i < count || i >= count * 2}>
+              <BuildCard
+                build={p}
+                index={i % count}
+                sizes="(min-width: 768px) 550px, 100vw"
+                tabIndex={i < count || i >= count * 2 ? -1 : 0}
+                className="size-full"
+              />
             </li>
           ))}
         </ul>
       </div>
+
+      <KeyButton href={works.all.href} tone="black" className="relative z-[2] mt-10">
+        {works.all.label}
+      </KeyButton>
     </section>
   );
 }
