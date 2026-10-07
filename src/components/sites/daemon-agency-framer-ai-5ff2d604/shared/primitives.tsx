@@ -65,6 +65,21 @@ export function Tag({ children, tone = "dark", className }: { children: React.Re
   );
 }
 
+// 3×5 pixel crystal: pointed tip, lit left facet, front, shaded right facet
+const SHARD = [".L.", "LFD", "LFD", "LFD", "LFD"];
+const SHARD_FILL = { L: "#f7efff", F: "#c084fc", D: "#7c3aed" } as const;
+
+/** Tiny pixel crystal used as a list bullet. Height comes from `className`. */
+export function ShardBullet({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 3 5" shapeRendering="crispEdges" aria-hidden="true" className={cn("aspect-[3/5] shrink-0", className)}>
+      {SHARD.flatMap((row, y) =>
+        [...row].flatMap((c, x) => (c === "." ? [] : [<rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill={SHARD_FILL[c as keyof typeof SHARD_FILL]} />])),
+      )}
+    </svg>
+  );
+}
+
 /** Screw-head glyph used in the corners of the 3D buttons. */
 function Screw({ className }: { className?: string }) {
   return (

@@ -2,17 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { StepIcon, type StepIconKind } from "../shared/StepIcon";
+import { Sticker } from "../shared/Sticker";
+
+// Each step's sticker sits at its own slight tilt
+const TILTS = [-6, 5, -4, 7];
 
 const STEP_MS = 750; // time for the bar to run through one step
 const CELLS = 20; // squares in each step's bar
 
 /**
  * The four work steps in a row, joined by a pixel progress bar. As steps scroll into view
- * the bar fills square by square and each step lights up in turn (on phones, one by one
- * as you scroll down to it).
+ * the bar fills square by square and each step lights up in turn, its sticker slapping on
+ * in colour (on phones, one by one as you scroll down to it).
  */
-export function ProcessSteps({ steps }: { steps: { title: string; text: string; icon: StepIconKind }[] }) {
+export function ProcessSteps({ steps }: { steps: { title: string; text: string; sticker: string }[] }) {
   const ref = useRef<HTMLOListElement>(null);
   const [target, setTarget] = useState(0); // steps scrolled into view (counting from the first)
   const [reached, setReached] = useState(0); // steps lit so far; catches up with target one by one
@@ -67,12 +70,12 @@ export function ProcessSteps({ steps }: { steps: { title: string; text: string; 
               )}
             >
               <div className="flex items-start justify-between gap-4">
-                <StepIcon kind={step.icon} active={on} className="w-20 md:w-24" />
+                <Sticker name={step.sticker} active={on} tilt={TILTS[i % TILTS.length]} className="-mt-2 -ml-2 w-24 md:w-28" />
                 <span className={cn("font-pixel text-[22px] leading-none transition-colors duration-500 md:text-[26px]", on ? "text-violet" : "text-white/20")}>
                   {String(i + 1).padStart(2, "0")}
                 </span>
               </div>
-              <h3 className="mt-8 font-headline text-[26px] leading-[1.05] font-[800] uppercase [font-variation-settings:'wdth'_85] md:text-[30px]">
+              <h3 className="crystal mt-6 font-headline text-[26px] leading-[1.05] font-[800] uppercase [font-variation-settings:'wdth'_85] md:text-[30px]">
                 {step.title}
               </h3>
               <p className="mt-3 text-[18px] leading-[1.55] text-white/70 md:text-[17px]">{step.text}</p>

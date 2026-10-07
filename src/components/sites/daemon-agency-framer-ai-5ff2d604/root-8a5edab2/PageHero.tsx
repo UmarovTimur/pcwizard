@@ -53,9 +53,9 @@ export function PageHero({
   meta?: React.ReactNode;
 }) {
   return (
-    <section className="relative flex justify-center overflow-hidden pt-[150px] pb-[80px] max-md:pt-32">
+    <section className="relative flex justify-center overflow-hidden pt-[150px] pb-[140px] max-md:pt-32 max-md:pb-[100px]">
       <div className="absolute inset-0 bg-ink" />
-      <PixelField className="absolute inset-0 z-[1] opacity-70" density={0.8} fade={0.3} />
+      <PixelField className="absolute inset-0 z-[1]" />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(60%_50%_at_50%_100%,rgba(124,58,237,0.25),transparent)]" />
       <Noise className="z-[1]" />
 

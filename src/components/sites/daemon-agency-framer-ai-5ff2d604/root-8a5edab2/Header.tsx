@@ -58,6 +58,7 @@ export function Header() {
           <a
             href={`tel:${footer.phone.replace(/\s/g, "")}`}
             aria-label={`Позвонить: ${footer.phone}`}
+            data-pixel-avoid
             className="group pointer-events-auto flex items-center gap-1.5 py-2 font-pixel min-[400px]:gap-2.5 text-[10px] leading-[22px] whitespace-nowrap text-white transition-colors hover:text-lavender min-[400px]:text-[11px] md:text-[14px]"
           >
             <span aria-hidden="true" className="relative flex size-2">

@@ -10,7 +10,7 @@ export function Footer() {
     <footer className="relative flex justify-center overflow-hidden bg-ink pb-[clamp(120px,14vw,200px)]">
       <Noise />
       {/* Pixel field at the very bottom of the page, under the footer content, densest at the edge */}
-      <PixelField className="absolute inset-x-0 bottom-0 h-[clamp(200px,22vw,320px)]" start={0.25} />
+      <PixelField className="absolute inset-x-0 bottom-0 h-[clamp(200px,22vw,320px)]" reach={0.85} />
       <PixelStars seed={3} count={6} />
       <div className="relative z-[2] grid w-full border-t border-line px-5 md:w-full md:max-w-[1100px] md:grid-cols-2 md:px-0">
         <Cross className="top-0 left-0" />

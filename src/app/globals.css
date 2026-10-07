@@ -48,7 +48,6 @@ body {
   font-weight: 800;
   font-variation-settings: "wdth" 65;
   letter-spacing: 0;
-  text-shadow: 0 0 18px rgba(168, 85, 247, 0.28);
 }
 
 @media (min-width: 768px) {
@@ -57,8 +56,39 @@ body {
   }
 }
 
-.on-light .font-display {
-  text-shadow: none;
+/* Crystal lettering, to match the pixel crystals: every line is filled with hard-edged bands,
+   white at the top running down into violet like a lit facet, and the letters stand on a
+   stepped pixel extrusion with no blur. The bands repeat per line (1lh) from the content box,
+   so multi-line headings shade every line the same way. The extrusion is a filter, kept in
+   --type-fx so .reveal can add its blur to it. */
+.font-display,
+.crystal {
+  --type-fx: drop-shadow(0 0.045em 0 #6d28d9) drop-shadow(0.03em 0.035em 0 #1e0b3d);
+  background: linear-gradient(
+      180deg,
+      #ffffff 0 46%,
+      #f0e2ff 46% 56%,
+      #dcb8ff 56% 64%,
+      #c08aff 64% 72%,
+      #9f5cf5 72% 100%
+    )
+    0 0 / 100% 1lh repeat-y content-box;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: var(--type-fx);
+}
+
+/* On the light lavender section: ink letters banded into deep violet, on a violet extrusion */
+.on-light :is(.font-display, .crystal) {
+  --type-fx: drop-shadow(0 0.045em 0 #a78bfa) drop-shadow(0.03em 0.035em 0 rgba(76, 29, 149, 0.35));
+  background-image: linear-gradient(180deg, #0b0614 0 52%, #24104a 52% 64%, #3b1a78 64% 100%);
+}
+
+/* Links in crystal lettering light up on hover */
+a:is(.font-display, .crystal):hover {
+  filter: var(--type-fx) brightness(1.25);
 }
 
 /* Logo-style lettering: soft white → lavender → violet fill with a dark violet drop shadow
@@ -92,24 +122,15 @@ body {
     0 0 0.7em rgba(91, 33, 182, 0.5);
 }
 
-/* Brushed-metal headline: silver bands with a bright "horizon" reflection, a dark edge
-   underneath for depth and a soft violet glow (filter works with clipped-text backgrounds). */
+/* Hero headline: the same crystal bands drawn as pixel art. The tile is 32×20 art pixels per
+   line (each pixel 1/20 of the line height); the band edges are broken up with random pixel
+   noise, so white crumbles into lavender and violet like a dithered 8-bit sprite. Deeper
+   two-step extrusion. */
 .metal-text {
-  background: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    #ece8f6 30%,
-    #b9b1d0 48%,
-    #fbf9ff 52%,
-    #d6cfe9 70%,
-    #a49bbf 88%,
-    #e7e2f3 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 0 rgba(46, 10, 122, 0.9)) drop-shadow(0 0 10px rgba(168, 85, 247, 0.2));
+  --type-fx: drop-shadow(0 0.035em 0 #7c3aed) drop-shadow(0.025em 0.03em 0 #2e1065) drop-shadow(0 0 0.25em rgba(168, 85, 247, 0.25));
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 20' preserveAspectRatio='none' shape-rendering='crispEdges'><rect x='0' y='0' width='32' height='1' fill='%23ffffff'/><rect x='0' y='1' width='32' height='1' fill='%23ffffff'/><rect x='0' y='2' width='32' height='1' fill='%23ffffff'/><rect x='0' y='3' width='32' height='1' fill='%23ffffff'/><rect x='0' y='4' width='32' height='1' fill='%23ffffff'/><rect x='0' y='5' width='32' height='1' fill='%23ffffff'/><rect x='0' y='6' width='32' height='1' fill='%23ffffff'/><rect x='0' y='7' width='2' height='1' fill='%23ffffff'/><rect x='2' y='7' width='1' height='1' fill='%23efe0ff'/><rect x='3' y='7' width='16' height='1' fill='%23ffffff'/><rect x='19' y='7' width='1' height='1' fill='%23efe0ff'/><rect x='20' y='7' width='1' height='1' fill='%23ffffff'/><rect x='21' y='7' width='1' height='1' fill='%23efe0ff'/><rect x='22' y='7' width='1' height='1' fill='%23ffffff'/><rect x='23' y='7' width='1' height='1' fill='%23efe0ff'/><rect x='24' y='7' width='1' height='1' fill='%23ffffff'/><rect x='25' y='7' width='1' height='1' fill='%23efe0ff'/><rect x='26' y='7' width='2' height='1' fill='%23ffffff'/><rect x='28' y='7' width='1' height='1' fill='%23efe0ff'/><rect x='29' y='7' width='3' height='1' fill='%23ffffff'/><rect x='0' y='8' width='1' height='1' fill='%23efe0ff'/><rect x='1' y='8' width='2' height='1' fill='%23ffffff'/><rect x='3' y='8' width='3' height='1' fill='%23efe0ff'/><rect x='6' y='8' width='1' height='1' fill='%23ffffff'/><rect x='7' y='8' width='1' height='1' fill='%23efe0ff'/><rect x='8' y='8' width='1' height='1' fill='%23ffffff'/><rect x='9' y='8' width='7' height='1' fill='%23efe0ff'/><rect x='16' y='8' width='1' height='1' fill='%23ffffff'/><rect x='17' y='8' width='2' height='1' fill='%23efe0ff'/><rect x='19' y='8' width='1' height='1' fill='%23ffffff'/><rect x='20' y='8' width='1' height='1' fill='%23efe0ff'/><rect x='21' y='8' width='1' height='1' fill='%23ffffff'/><rect x='22' y='8' width='2' height='1' fill='%23efe0ff'/><rect x='24' y='8' width='4' height='1' fill='%23ffffff'/><rect x='28' y='8' width='4' height='1' fill='%23efe0ff'/><rect x='0' y='9' width='3' height='1' fill='%23efe0ff'/><rect x='3' y='9' width='1' height='1' fill='%23ffffff'/><rect x='4' y='9' width='2' height='1' fill='%23efe0ff'/><rect x='6' y='9' width='1' height='1' fill='%23ffffff'/><rect x='7' y='9' width='6' height='1' fill='%23efe0ff'/><rect x='13' y='9' width='2' height='1' fill='%23ffffff'/><rect x='15' y='9' width='2' height='1' fill='%23efe0ff'/><rect x='17' y='9' width='1' height='1' fill='%23ffffff'/><rect x='18' y='9' width='6' height='1' fill='%23efe0ff'/><rect x='24' y='9' width='1' height='1' fill='%23d4a8ff'/><rect x='25' y='9' width='4' height='1' fill='%23efe0ff'/><rect x='29' y='9' width='1' height='1' fill='%23d4a8ff'/><rect x='30' y='9' width='2' height='1' fill='%23efe0ff'/><rect x='0' y='10' width='1' height='1' fill='%23efe0ff'/><rect x='1' y='10' width='1' height='1' fill='%23d4a8ff'/><rect x='2' y='10' width='2' height='1' fill='%23efe0ff'/><rect x='4' y='10' width='1' height='1' fill='%23d4a8ff'/><rect x='5' y='10' width='2' height='1' fill='%23efe0ff'/><rect x='7' y='10' width='1' height='1' fill='%23d4a8ff'/><rect x='8' y='10' width='1' height='1' fill='%23efe0ff'/><rect x='9' y='10' width='2' height='1' fill='%23d4a8ff'/><rect x='11' y='10' width='3' height='1' fill='%23efe0ff'/><rect x='14' y='10' width='1' height='1' fill='%23d4a8ff'/><rect x='15' y='10' width='3' height='1' fill='%23efe0ff'/><rect x='18' y='10' width='2' height='1' fill='%23d4a8ff'/><rect x='20' y='10' width='3' height='1' fill='%23efe0ff'/><rect x='23' y='10' width='2' height='1' fill='%23d4a8ff'/><rect x='25' y='10' width='3' height='1' fill='%23efe0ff'/><rect x='28' y='10' width='1' height='1' fill='%23d4a8ff'/><rect x='29' y='10' width='2' height='1' fill='%23efe0ff'/><rect x='31' y='10' width='1' height='1' fill='%23d4a8ff'/><rect x='0' y='11' width='2' height='1' fill='%23d4a8ff'/><rect x='2' y='11' width='1' height='1' fill='%23efe0ff'/><rect x='3' y='11' width='1' height='1' fill='%23d4a8ff'/><rect x='4' y='11' width='1' height='1' fill='%23efe0ff'/><rect x='5' y='11' width='2' height='1' fill='%23d4a8ff'/><rect x='7' y='11' width='1' height='1' fill='%23efe0ff'/><rect x='8' y='11' width='11' height='1' fill='%23d4a8ff'/><rect x='19' y='11' width='1' height='1' fill='%23efe0ff'/><rect x='20' y='11' width='1' height='1' fill='%23d4a8ff'/><rect x='21' y='11' width='1' height='1' fill='%23efe0ff'/><rect x='22' y='11' width='1' height='1' fill='%23d4a8ff'/><rect x='23' y='11' width='1' height='1' fill='%23efe0ff'/><rect x='24' y='11' width='7' height='1' fill='%23d4a8ff'/><rect x='31' y='11' width='1' height='1' fill='%23efe0ff'/><rect x='0' y='12' width='6' height='1' fill='%23d4a8ff'/><rect x='6' y='12' width='1' height='1' fill='%23b679fb'/><rect x='7' y='12' width='6' height='1' fill='%23d4a8ff'/><rect x='13' y='12' width='1' height='1' fill='%23b679fb'/><rect x='14' y='12' width='4' height='1' fill='%23d4a8ff'/><rect x='18' y='12' width='1' height='1' fill='%23b679fb'/><rect x='19' y='12' width='13' height='1' fill='%23d4a8ff'/><rect x='0' y='13' width='1' height='1' fill='%23b679fb'/><rect x='1' y='13' width='1' height='1' fill='%23d4a8ff'/><rect x='2' y='13' width='3' height='1' fill='%23b679fb'/><rect x='5' y='13' width='1' height='1' fill='%23d4a8ff'/><rect x='6' y='13' width='4' height='1' fill='%23b679fb'/><rect x='10' y='13' width='1' height='1' fill='%23d4a8ff'/><rect x='11' y='13' width='4' height='1' fill='%23b679fb'/><rect x='15' y='13' width='3' height='1' fill='%23d4a8ff'/><rect x='18' y='13' width='1' height='1' fill='%23b679fb'/><rect x='19' y='13' width='5' height='1' fill='%23d4a8ff'/><rect x='24' y='13' width='2' height='1' fill='%23b679fb'/><rect x='26' y='13' width='1' height='1' fill='%23d4a8ff'/><rect x='27' y='13' width='2' height='1' fill='%23b679fb'/><rect x='29' y='13' width='1' height='1' fill='%23d4a8ff'/><rect x='30' y='13' width='2' height='1' fill='%23b679fb'/><rect x='0' y='14' width='1' height='1' fill='%23d4a8ff'/><rect x='1' y='14' width='10' height='1' fill='%23b679fb'/><rect x='11' y='14' width='1' height='1' fill='%23d4a8ff'/><rect x='12' y='14' width='11' height='1' fill='%23b679fb'/><rect x='23' y='14' width='1' height='1' fill='%23d4a8ff'/><rect x='24' y='14' width='1' height='1' fill='%23b679fb'/><rect x='25' y='14' width='1' height='1' fill='%23d4a8ff'/><rect x='26' y='14' width='1' height='1' fill='%23b679fb'/><rect x='27' y='14' width='1' height='1' fill='%23d4a8ff'/><rect x='28' y='14' width='2' height='1' fill='%23b679fb'/><rect x='30' y='14' width='1' height='1' fill='%23d4a8ff'/><rect x='31' y='14' width='1' height='1' fill='%23b679fb'/><rect x='0' y='15' width='1' height='1' fill='%23b679fb'/><rect x='1' y='15' width='1' height='1' fill='%238f45ef'/><rect x='2' y='15' width='1' height='1' fill='%23b679fb'/><rect x='3' y='15' width='1' height='1' fill='%238f45ef'/><rect x='4' y='15' width='3' height='1' fill='%23b679fb'/><rect x='7' y='15' width='2' height='1' fill='%238f45ef'/><rect x='9' y='15' width='2' height='1' fill='%23b679fb'/><rect x='11' y='15' width='2' height='1' fill='%238f45ef'/><rect x='13' y='15' width='1' height='1' fill='%23b679fb'/><rect x='14' y='15' width='1' height='1' fill='%238f45ef'/><rect x='15' y='15' width='1' height='1' fill='%23b679fb'/><rect x='16' y='15' width='1' height='1' fill='%238f45ef'/><rect x='17' y='15' width='1' height='1' fill='%23b679fb'/><rect x='18' y='15' width='2' height='1' fill='%238f45ef'/><rect x='20' y='15' width='1' height='1' fill='%23b679fb'/><rect x='21' y='15' width='1' height='1' fill='%238f45ef'/><rect x='22' y='15' width='2' height='1' fill='%23b679fb'/><rect x='24' y='15' width='1' height='1' fill='%238f45ef'/><rect x='25' y='15' width='7' height='1' fill='%23b679fb'/><rect x='0' y='16' width='2' height='1' fill='%23b679fb'/><rect x='2' y='16' width='2' height='1' fill='%238f45ef'/><rect x='4' y='16' width='2' height='1' fill='%23b679fb'/><rect x='6' y='16' width='7' height='1' fill='%238f45ef'/><rect x='13' y='16' width='1' height='1' fill='%23b679fb'/><rect x='14' y='16' width='3' height='1' fill='%238f45ef'/><rect x='17' y='16' width='1' height='1' fill='%23b679fb'/><rect x='18' y='16' width='2' height='1' fill='%238f45ef'/><rect x='20' y='16' width='2' height='1' fill='%23b679fb'/><rect x='22' y='16' width='1' height='1' fill='%238f45ef'/><rect x='23' y='16' width='1' height='1' fill='%23b679fb'/><rect x='24' y='16' width='8' height='1' fill='%238f45ef'/><rect x='0' y='17' width='1' height='1' fill='%23b679fb'/><rect x='1' y='17' width='31' height='1' fill='%238f45ef'/><rect x='0' y='18' width='32' height='1' fill='%238f45ef'/><rect x='0' y='19' width='32' height='1' fill='%238f45ef'/></svg>");
+  background-size: calc(1lh * 1.6) 1lh;
+  background-repeat: repeat;
 }
 
 ::selection {
@@ -152,7 +173,7 @@ body {
 .reveal {
   opacity: 0;
   transform: translateY(24px);
-  filter: blur(6px);
+  filter: blur(6px) var(--type-fx,);
   transition:
     opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
@@ -162,7 +183,7 @@ body {
 .reveal.is-visible {
   opacity: 1;
   transform: none;
-  filter: none;
+  filter: blur(0) var(--type-fx,);
 }
 
 @keyframes cube-spin {
@@ -219,6 +240,39 @@ body {
 .star-twinkle {
   animation: star-twinkle var(--twinkle, 2.4s) steps(4) infinite;
   animation-delay: var(--delay, 0s);
+}
+
+/* Stickers: faded and grey until their step is reached, then they slap on in colour with a
+   bounce; on hover they straighten and lift. The slap fills backwards only, so the hover
+   transform takes over once it ends. */
+.sticker {
+  transform: rotate(var(--tilt, 0deg)) scale(0.92);
+  filter: grayscale(1) brightness(0.55);
+  opacity: 0.35;
+  transition:
+    transform 0.25s cubic-bezier(0.2, 1.4, 0.4, 1),
+    filter 0.25s ease,
+    opacity 0.25s ease;
+}
+.sticker[data-active] {
+  transform: rotate(var(--tilt, 0deg));
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.55));
+  opacity: 1;
+  animation: sticker-slap 0.5s cubic-bezier(0.2, 1.5, 0.4, 1) backwards;
+}
+.sticker[data-active]:hover {
+  transform: rotate(0deg) translateY(-6px) scale(1.08);
+  filter: drop-shadow(0 16px 14px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 12px rgba(168, 85, 247, 0.45));
+}
+@keyframes sticker-slap {
+  from {
+    opacity: 0;
+    transform: rotate(calc(var(--tilt, 0deg) - 18deg)) scale(1.7);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(var(--tilt, 0deg)) scale(1);
+  }
 }
 
 /* Hero PC: slow hover */
@@ -296,13 +350,16 @@ body {
   html {
     scroll-behavior: auto;
   }
+  .sticker[data-active] {
+    animation: none;
+  }
   .marquee-track {
     animation: none;
   }
   .reveal {
     opacity: 1;
     transform: none;
-    filter: none;
+    filter: var(--type-fx, none);
     transition: none;
   }
   *,
