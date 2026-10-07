@@ -37,8 +37,8 @@ export function Achievement({ title, text }: { title: string; text: string }) {
         ))}
       </svg>
       <div className="flex flex-col gap-1.5">
-        <p className="font-pixel text-[9px] leading-[14px] text-[#facc15] uppercase">{title}</p>
-        <p className="font-pixel text-[11px] leading-[18px] uppercase">{text}</p>
+        <p className="font-pixel text-[11px] leading-[17px] text-[#facc15] uppercase">{title}</p>
+        <p className="font-pixel text-[13px] leading-[21.5px] uppercase">{text}</p>
       </div>
     </div>
   );

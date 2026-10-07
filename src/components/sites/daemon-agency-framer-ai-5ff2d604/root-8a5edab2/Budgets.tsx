@@ -5,6 +5,7 @@ import { budgets } from "./content";
 
 /** Home: typical gaming builds by budget, linking to the long-form articles. */
 export function Budgets() {
+  const [lead, figures] = budgets.heading.split(": ");
   return (
     <section id="budgets" className="relative flex flex-col items-center overflow-hidden pt-[200px]">
       <Noise />
@@ -14,24 +15,25 @@ export function Budgets() {
         <span className="absolute inset-y-0 left-[calc(50%+365px)] w-px bg-line" />
       </div>
 
-      <div className="relative z-[2] grid w-full gap-8 border-t border-line px-5 pt-[30px] pb-[50px] md:w-[1100px] md:grid-cols-2 md:items-end md:px-[30px]">
+      <div className="relative z-[2] grid w-full gap-8 border-t border-line px-5 pt-[30px] pb-[50px] md:w-full md:max-w-[1100px] md:grid-cols-2 md:items-end md:px-[30px]">
         <Cross className="top-0 left-0" />
         <Cross className="top-0 left-full" />
         <div className="flex flex-col gap-5">
           <Tag>{budgets.tag}</Tag>
-          <Reveal as="h2" className="max-w-[520px] font-display text-[56px] leading-[58px] tracking-[-0.02em] uppercase max-md:text-[40px] max-md:leading-[44px]">
-            {budgets.heading}
+          <Reveal as="h2" className="font-display text-[34px] leading-[1.05] uppercase md:text-[30px] lg:text-[36px]">
+            {/* The budget figures stay on one line on wide screens instead of breaking between slashes */}
+            {lead}: <span className="xl:whitespace-nowrap">{figures}</span>
           </Reveal>
         </div>
         <div className="flex flex-col items-start gap-5 md:pl-[60px]">
-          <p className="max-w-[340px] text-[15px] leading-6 font-light tracking-[0.02em]">{budgets.lead}</p>
+          <p className="max-w-[340px] text-[17px] leading-[27px] font-light tracking-[0.02em]">{budgets.lead}</p>
           <KeyButton href={budgets.cta.href} tone="black">
             {budgets.cta.label}
           </KeyButton>
         </div>
       </div>
 
-      <div className="relative z-[2] w-full px-5 md:w-[1100px] md:px-0">
+      <div className="relative z-[2] w-full px-5 md:w-full md:max-w-[1100px] md:px-0">
         <BuildCards />
       </div>
     </section>

@@ -32,7 +32,7 @@ export function Column({ children, className, wide = false }: { children: React.
         <span className="absolute inset-y-0 left-[calc(50%-365px)] w-px bg-line" />
         <span className="absolute inset-y-0 left-[calc(50%+365px)] w-px bg-line" />
       </div>
-      <div className={cn("relative z-[2] w-full px-5", wide ? "md:w-[1100px] md:px-0" : "md:w-[730px] md:px-[30px]")}>{children}</div>
+      <div className={cn("relative z-[2] w-full px-5", wide ? "md:w-full md:max-w-[1100px] md:px-0" : "md:w-full md:max-w-[730px] md:px-[30px]")}>{children}</div>
     </section>
   );
 }
@@ -47,7 +47,7 @@ export function RelatedLinks({ title = "Смотрите также", items }: {
         <Cross className="top-0 left-full" />
         {items.map((l) => (
           <li key={l.href} className="border-line max-md:border-b max-md:last:border-b-0 md:border-l md:first:border-l-0">
-            <Link href={l.href} className="group flex h-full items-center justify-between gap-4 px-5 py-5 font-mono text-[13px] leading-[20px] uppercase transition-colors hover:bg-white/[0.04]">
+            <Link href={l.href} className="group flex h-full items-center justify-between gap-4 px-5 py-5 font-mono text-[15px] leading-[23px] uppercase transition-colors hover:bg-white/[0.04]">
               {l.label}
               <ArrowRight className="size-3.5 shrink-0 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={1.25} aria-hidden="true" />
             </Link>

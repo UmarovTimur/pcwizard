@@ -12,10 +12,10 @@ export function ArticleText({ a }: { a: Post }) {
     <div className="flex h-[231px] border-line">
       <div className="flex flex-1 flex-col justify-between pt-5 pr-[30px] pb-[30px] pl-5">
         <div className="flex flex-col gap-3">
-          <h3 className="font-mono text-[13px] leading-[20.8px] uppercase">{a.title}</h3>
-          <p className="line-clamp-3 text-sm leading-[22.4px] font-light tracking-[0.02em] text-muted">{a.excerpt}</p>
+          <h3 className="font-mono text-[15px] leading-[24px] uppercase">{a.title}</h3>
+          <p className="line-clamp-3 text-base leading-[25.5px] font-light tracking-[0.02em] text-muted">{a.excerpt}</p>
         </div>
-        <div className="flex gap-5 font-mono text-xs leading-[18px] tracking-[-0.03em] text-muted">
+        <div className="flex gap-5 font-mono text-[14px] leading-[21px] tracking-[-0.03em] text-muted">
           <span className="flex items-center gap-[5px]">
             <CalendarDays className="size-3.5" strokeWidth={1.25} aria-hidden="true" />
             <time dateTime={a.published}>{formatDate(a.published)}</time>
@@ -46,7 +46,7 @@ export function Articles() {
         <BigMarquee text={articles.marquee} heading={articles.heading} duration={20} size="md" />
       </div>
 
-      <ul className="relative z-[2] grid w-full border-t border-line px-5 md:w-[1100px] md:grid-cols-3 md:px-0">
+      <ul className="relative z-[2] grid w-full border-t border-line px-5 md:w-full md:max-w-[1100px] md:grid-cols-3 md:px-0">
         <Cross className="top-0 left-0" />
         <Cross className="top-0 left-1/3" />
         <Cross className="top-0 left-2/3" />

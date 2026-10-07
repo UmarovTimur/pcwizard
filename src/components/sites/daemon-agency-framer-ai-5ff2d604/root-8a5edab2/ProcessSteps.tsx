@@ -75,7 +75,7 @@ export function ProcessSteps({ steps }: { steps: { title: string; text: string; 
               <h3 className="mt-8 font-headline text-[26px] leading-[1.05] font-[800] uppercase [font-variation-settings:'wdth'_85] md:text-[30px]">
                 {step.title}
               </h3>
-              <p className="mt-3 text-[16px] leading-[1.55] text-white/70 md:text-[17px]">{step.text}</p>
+              <p className="mt-3 text-[18px] leading-[1.55] text-white/70 md:text-[17px]">{step.text}</p>
             </div>
           </li>
         );

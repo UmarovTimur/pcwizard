@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
-import { Caveat, Coda, IBM_Plex_Mono, Inria_Sans, Inter, Onest, Oswald, Press_Start_2P, Science_Gothic } from "next/font/google";
+import { Caveat, Coda, IBM_Plex_Mono, Inria_Sans, Inter, Onest, Press_Start_2P, Science_Gothic } from "next/font/google";
 import { localBusinessLd, site } from "@/lib/site";
 import { ContactModal } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/root-8a5edab2/ContactModal";
 import { JsonLd } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/shared/JsonLd";
 import "./globals.css";
 
-// Display: Oswald 700 stands in for Anton, which has no Cyrillic.
-const oswald = Oswald({ variable: "--font-oswald", subsets: ["latin", "cyrillic"], weight: "700" });
-// Hero headline: Science Gothic — a variable "hardware" grotesque (Bank Gothic lineage) with Cyrillic;
+// Headlines (hero and section headings): Science Gothic — a variable "hardware" grotesque (Bank Gothic lineage) with Cyrillic;
 // the width axis lets the headline run condensed on phones and full width on desktop.
 const scienceGothic = Science_Gothic({ variable: "--font-science", subsets: ["latin", "cyrillic"], axes: ["wdth"] });
 // Body text: Onest — a sans designed for Cyrillic UI text, clear at small sizes.
@@ -49,7 +47,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const fonts = [oswald, scienceGothic, onest, plexMono, pressStart, caveat, coda, inriaSans, inter].map((f) => f.variable).join(" ");
+  const fonts = [scienceGothic, onest, plexMono, pressStart, caveat, coda, inriaSans, inter].map((f) => f.variable).join(" ");
   return (
     <html lang="ru" className={`${fonts} antialiased`}>
       <head>

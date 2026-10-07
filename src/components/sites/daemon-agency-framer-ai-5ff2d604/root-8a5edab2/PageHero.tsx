@@ -12,7 +12,7 @@ export interface Crumb {
 function Breadcrumbs({ trail }: { trail: Crumb[] }) {
   return (
     <nav aria-label="Хлебные крошки">
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 font-pixel text-[9px] leading-[18px] uppercase text-muted">
+      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 font-pixel text-[11px] leading-[22px] uppercase text-muted">
         {trail.map((c, i) => {
           const last = i === trail.length - 1;
           return (
@@ -59,11 +59,11 @@ export function PageHero({
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(60%_50%_at_50%_100%,rgba(124,58,237,0.25),transparent)]" />
       <Noise className="z-[1]" />
 
-      <div className="relative z-[2] flex w-full flex-col gap-8 border-t border-line px-5 pt-[30px] md:w-[1100px] md:px-[30px]">
+      <div className="relative z-[2] flex w-full flex-col gap-8 border-t border-line px-5 pt-[30px] md:w-full md:max-w-[1100px] md:px-[30px]">
         <Cross className="top-0 left-0" />
         <Cross className="top-0 left-full" />
         <Breadcrumbs trail={trail} />
-        <h1 className="max-w-[900px] text-balance font-display text-[clamp(40px,6vw,80px)] leading-[1.02] tracking-[-0.02em] uppercase">{title}</h1>
+        <h1 className="max-w-[900px] text-balance font-display text-[clamp(30px,6vw,80px)] leading-[1.02] uppercase">{title}</h1>
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div className="flex max-w-[520px] flex-col gap-5">
             <p className="text-[17px] leading-7 font-light tracking-[0.01em] text-white/90">{lead}</p>
@@ -71,7 +71,7 @@ export function PageHero({
             {bullets && (
               <ul className="flex flex-wrap gap-2">
                 {bullets.map((b) => (
-                  <li key={b} className="bg-line px-3 py-2 font-pixel text-[9px] leading-[16px] uppercase">
+                  <li key={b} className="bg-line px-3 py-2 font-pixel text-[11px] leading-[19.5px] uppercase">
                     {b}
                   </li>
                 ))}
@@ -80,7 +80,7 @@ export function PageHero({
           </div>
           <div className="flex flex-wrap items-center gap-5">
             <KeyButton href="#contact">Оставить заявку</KeyButton>
-            <a href={site.telegram} target="_blank" rel="noopener noreferrer" className="font-mono text-[13px] underline decoration-white/60 underline-offset-[6px] hover:text-white/70">
+            <a href={site.telegram} target="_blank" rel="noopener noreferrer" className="font-mono text-[15px] underline decoration-white/60 underline-offset-[6px] hover:text-white/70">
               Написать в Telegram
             </a>
           </div>

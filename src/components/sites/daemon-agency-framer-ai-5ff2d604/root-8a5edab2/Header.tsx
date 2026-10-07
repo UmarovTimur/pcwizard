@@ -44,7 +44,7 @@ export function Header() {
             className="pointer-events-auto -ml-2 block rounded-lg bg-ink/60 px-2 backdrop-blur-sm"
             aria-label={`${brand.name} — на главную`}
           >
-            <Image src="/brand/logo.png" alt={brand.name} width={366} height={160} priority className="h-12 w-auto md:h-[52px]" />
+            <Image src="/brand/logo.png" alt={brand.name} width={366} height={160} priority className="h-11 w-auto min-[400px]:h-12 md:h-[52px]" />
           </Link>
           {/* Game-HUD readout with the page's real frame rate */}
           <FpsCounter className="ml-4 hidden rounded-lg bg-ink/60 px-3 py-2 backdrop-blur-sm md:flex" />
@@ -54,11 +54,11 @@ export function Header() {
       {/* Phone: at the top of the page, between logo and menu button, but scrolls away (not fixed) */}
       {/* Same row box as the logo (pt-14 + 48/52px), so it lines up with the logo and the menu button */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-50 flex justify-center pt-[14px]">
-        <div className="flex h-12 w-full max-w-[1180px] items-center justify-end px-5 pr-[62px] md:h-[52px] md:px-10 md:pr-[85px]">
+        <div className="flex h-12 w-full max-w-[1180px] items-center justify-end px-5 pr-[54px] md:h-[52px] md:px-10 md:pr-[85px]">
           <a
             href={`tel:${footer.phone.replace(/\s/g, "")}`}
             aria-label={`Позвонить: ${footer.phone}`}
-            className="group pointer-events-auto flex items-center gap-2.5 py-2 font-pixel text-[9px] leading-[18px] whitespace-nowrap text-white transition-colors hover:text-lavender md:text-[12px]"
+            className="group pointer-events-auto flex items-center gap-1.5 py-2 font-pixel min-[400px]:gap-2.5 text-[10px] leading-[22px] whitespace-nowrap text-white transition-colors hover:text-lavender min-[400px]:text-[11px] md:text-[14px]"
           >
             <span aria-hidden="true" className="relative flex size-2">
               <span className="absolute inset-0 animate-ping bg-[#4ade80] opacity-60" />
@@ -126,15 +126,15 @@ export function Header() {
                         aria-hidden="true"
                         className="absolute inset-0 origin-left scale-x-0 bg-[image:var(--accent-gradient-x)] transition-transform duration-300 ease-[steps(8,end)] group-hover:scale-x-100 group-focus-visible:scale-x-100"
                       />
-                      <span aria-hidden="true" className="relative w-6 font-pixel text-[9px] text-violet transition-colors group-hover:text-white group-focus-visible:text-white">
+                      <span aria-hidden="true" className="relative w-6 font-pixel text-[11px] text-violet transition-colors group-hover:text-white group-focus-visible:text-white">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      <span className="relative font-pixel text-[13px] leading-[20px] [word-spacing:-0.4em] uppercase transition-transform duration-300 ease-[steps(4,end)] group-hover:translate-x-2 group-hover:[text-shadow:0_0_10px_rgba(255,255,255,0.6)] group-focus-visible:translate-x-2">
+                      <span className="relative font-pixel text-[15px] leading-[23px] [word-spacing:-0.4em] uppercase transition-transform duration-300 ease-[steps(4,end)] group-hover:translate-x-2 group-hover:[text-shadow:0_0_10px_rgba(255,255,255,0.6)] group-focus-visible:translate-x-2">
                         {item.label}
                       </span>
                       <span
                         aria-hidden="true"
-                        className="relative ml-auto font-pixel text-[13px] opacity-0 transition-[opacity,transform] duration-300 ease-[steps(4,end)] -translate-x-2 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
+                        className="relative ml-auto font-pixel text-[15px] opacity-0 transition-[opacity,transform] duration-300 ease-[steps(4,end)] -translate-x-2 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
                       >
                         &gt;
                       </span>

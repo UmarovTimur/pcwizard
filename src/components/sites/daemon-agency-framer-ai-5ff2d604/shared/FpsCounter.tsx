@@ -25,7 +25,7 @@ export function FpsCounter({ className }: { className?: string }) {
   }, []);
 
   return (
-    <div aria-hidden="true" className={cn("flex items-center gap-4 font-pixel text-[9px] leading-[14px] uppercase", className)}>
+    <div aria-hidden="true" className={cn("flex items-center gap-4 font-pixel text-[11px] leading-[17px] uppercase", className)}>
       <span className="text-[#4ade80] [text-shadow:0_0_8px_rgba(74,222,128,0.7)]">FPS {fps ?? "--"}</span>
       <span className="text-muted">P1</span>
       <span className="pixel-cursor text-lavender">READY</span>

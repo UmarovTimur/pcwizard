@@ -72,7 +72,7 @@ export default async function PostPage({ params }: Props) {
         title={post.title}
         lead={post.excerpt}
         meta={
-          <p className="flex gap-5 font-mono text-xs leading-[18px] tracking-[-0.03em] text-muted">
+          <p className="flex gap-5 font-mono text-[14px] leading-[21px] tracking-[-0.03em] text-muted">
             <span className="flex items-center gap-[5px]">
               <CalendarDays className="size-3.5" strokeWidth={1.25} aria-hidden="true" />
               {post.updated !== post.published ? "Обновлено " : ""}

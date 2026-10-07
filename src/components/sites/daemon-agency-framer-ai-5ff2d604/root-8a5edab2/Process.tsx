@@ -12,7 +12,7 @@ export function Process() {
 
       <div className="relative w-full max-w-[1180px] px-5 md:px-10">
         <div className="mb-10 flex flex-col gap-6 md:mb-14 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
-          <h2 className="max-w-[20ch] font-headline text-[34px] leading-[1.02] font-[800] uppercase [font-variation-settings:'wdth'_80] md:text-[52px]">
+          <h2 className="max-w-[20ch] font-display text-[36px] leading-[1.02] uppercase md:text-[52px] xl:text-[60px]">
             {process.heading}
           </h2>
           <div className="flex flex-col gap-4 max-lg:hidden lg:items-end">

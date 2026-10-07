@@ -39,7 +39,7 @@ function Meter({ label, value }: { label: string; value: number }) {
     <div ref={ref} className="relative flex h-[88px] items-center gap-[19px] border-t border-line py-2 pr-10 pl-3">
       <Cross className="top-0 left-0" />
       <Cross className="top-0 left-full" />
-      <span className="w-[18px] shrink-0 font-mono text-xs leading-[18px] tracking-[-0.03em] text-muted [writing-mode:vertical-rl] rotate-180">{label}</span>
+      <span className="w-[18px] shrink-0 font-mono text-[14px] leading-[21px] tracking-[-0.03em] text-muted [writing-mode:vertical-rl] rotate-180">{label}</span>
       <div className="relative h-[45px] w-full max-w-[282px]" role="meter" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(value * 100)}>
         <Ticks className="absolute inset-0 flex justify-between opacity-10" />
         <div className="absolute inset-y-0 left-0 overflow-hidden transition-[width] duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)]" style={{ width: on ? `${value * 100}%` : "0%" }}>
@@ -63,10 +63,10 @@ export function WhyUs() {
         <div className="flex w-full flex-col gap-[60px] px-5 md:w-[365px] md:px-0">
           <div className="flex flex-col gap-5 pt-[30px] md:pr-5 md:pl-[30px]">
             <Tag>{whyUs.tag}</Tag>
-            <Reveal as="h2" className="font-display text-[40px] leading-[44px] tracking-[-0.03em] uppercase">
+            <Reveal as="h2" className="font-display text-[38px] leading-[1.05] uppercase md:text-[42px]">
               {whyUs.heading}
             </Reveal>
-            <p className="max-w-[300px] text-[15px] leading-6 font-light tracking-[0.02em]">{whyUs.text}</p>
+            <p className="max-w-[300px] text-[17px] leading-[27px] font-light tracking-[0.02em]">{whyUs.text}</p>
           </div>
           <div className="border-b border-line">
             {whyUs.meters.map((m) => (
@@ -80,7 +80,7 @@ export function WhyUs() {
         <Placeholder label="Фото 720×788" tone="mid" className="absolute inset-0" />
         <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(68%_150%_at_6%_87%,rgb(124,58,237)_0%,rgb(147,51,234)_45%,rgb(217,70,239)_80%)] opacity-90 mix-blend-screen" />
         <Noise className="opacity-[0.43]" />
-        <p aria-hidden="true" className="relative p-[30px] font-display text-[clamp(120px,14vw,200px)] leading-[0.9] tracking-[-0.03em] text-white uppercase">
+        <p aria-hidden="true" className="relative p-[30px] font-display text-[clamp(64px,8.2vw,124px)] leading-[0.95] text-white uppercase">
           {whyUs.bigWord.map((w) => (
             <span key={w} className="block">
               {w}

@@ -52,7 +52,7 @@ export function Tag({ children, tone = "dark", className }: { children: React.Re
   return (
     <div
       className={cn(
-        "relative inline-flex w-fit items-center justify-center px-4 py-2 font-pixel text-[9px] leading-[18px]",
+        "relative inline-flex w-fit items-center justify-center px-4 py-2 font-pixel text-[11px] leading-[22px]",
         tone === "dark" ? "bg-line text-white" : "bg-black/10 text-ink",
         className,
       )}
@@ -129,7 +129,7 @@ export function KeyButton({ href, children, tone = "white", className }: ButtonP
       )}
     >
       {/* Invisible copy of the label sets the button width */}
-      <span aria-hidden="true" className="invisible flex h-full items-center px-6 pb-2 font-pixel text-[11px] leading-[19.2px] whitespace-nowrap">
+      <span aria-hidden="true" className="invisible flex h-full items-center px-6 pb-2 font-pixel text-[13px] leading-[22.5px] whitespace-nowrap">
         {children}
       </span>
 
@@ -145,7 +145,7 @@ export function KeyButton({ href, children, tone = "white", className }: ButtonP
             }[tone],
           )}
         >
-          <span className="font-pixel text-[11px] leading-[19.2px] whitespace-nowrap transition-opacity duration-200 ease-out group-hover:opacity-0 group-focus-visible:opacity-0">
+          <span className="font-pixel text-[13px] leading-[22.5px] whitespace-nowrap transition-opacity duration-200 ease-out group-hover:opacity-0 group-focus-visible:opacity-0">
             {children}
           </span>
           <span className="absolute top-[17px] left-1/2 h-[15px] w-[30px] -translate-x-1/2 overflow-hidden opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 group-focus-visible:opacity-100">
@@ -169,7 +169,7 @@ export function BarButton({ href, children, variant }: { href: string; children:
     <a
       href={href}
       className={cn(
-        "relative flex h-[62px] w-full items-center justify-center font-pixel text-[11px] text-white transition-opacity hover:opacity-90",
+        "relative flex h-[62px] w-full items-center justify-center font-pixel text-[13px] text-white transition-opacity hover:opacity-90",
         variant === "gradient"
           ? "bg-[radial-gradient(58%_306%_at_0%_79%,rgb(124,58,237)_3%,rgb(147,51,234)_40%,rgb(217,70,239)_75%)]"
           : "bg-[radial-gradient(rgba(255,255,255,0.18)_1px,transparent_1px)] bg-[size:6px_6px]",
@@ -197,7 +197,7 @@ export function Placeholder({ label, className, tone = "dark" }: { label: string
         <line x1="0" y1="0" x2="100" y2="100" stroke="currentColor" strokeWidth="0.15" vectorEffect="non-scaling-stroke" />
         <line x1="100" y1="0" x2="0" y2="100" stroke="currentColor" strokeWidth="0.15" vectorEffect="non-scaling-stroke" />
       </svg>
-      <span className="absolute bottom-2 left-2.5 font-mono text-[10px] tracking-wide uppercase">{label}</span>
+      <span className="absolute bottom-2 left-2.5 font-mono text-[12px] tracking-wide uppercase">{label}</span>
     </div>
   );
 }

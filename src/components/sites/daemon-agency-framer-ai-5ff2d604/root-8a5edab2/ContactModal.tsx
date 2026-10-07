@@ -1,6 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { PixelCurtain } from "../shared/PixelCurtain";
@@ -9,6 +10,9 @@ import { ContactForm } from "./Contact";
 import { contact, footer } from "./content";
 
 const OPEN_MS = 260;
+// On phones the quick-contact button waits until the hero has scrolled up by this much,
+// so it doesn't sit on top of the hero's own buttons.
+const HERO_SCROLL = 120;
 
 // 11×10 pixel speech bubble with three dots.
 const BUBBLE = [
@@ -27,7 +31,34 @@ const BUBBLE_CELLS = BUBBLE.flatMap((row, y) =>
   [...row].flatMap((c, x) => (c === "#" ? [{ x, y }] : [])),
 );
 
-/** Floating quick-contact button (bottom right, always visible). Opens the popup via the "#contact" link handler. */
+/** True on phones while the home hero still fills the screen (it has its own CTA buttons). */
+function useOverHeroOnPhone() {
+  const pathname = usePathname();
+  // Starts hidden, so on phones the button never flashes over the hero before the first check.
+  const [over, setOver] = useState(true);
+  useEffect(() => {
+    const phone = window.matchMedia("(max-width: 767px)");
+    const update = () => {
+      const hero = document.getElementById("hero");
+      setOver(!!hero && phone.matches && hero.getBoundingClientRect().bottom > window.innerHeight - HERO_SCROLL);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    phone.addEventListener("change", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      phone.removeEventListener("change", update);
+    };
+  }, [pathname]);
+  return over;
+}
+
+/**
+ * Floating quick-contact button (bottom right). Opens the popup via the "#contact" link handler.
+ * On phones it stays hidden over the home hero and slides in once you scroll down.
+ */
 function QuickContact({ hidden }: { hidden: boolean }) {
   return (
     <a
@@ -38,7 +69,7 @@ function QuickContact({ hidden }: { hidden: boolean }) {
         hidden ? "pointer-events-none translate-y-3 opacity-0" : "opacity-100",
       )}
     >
-      <span className="pointer-events-none bg-ink-2/90 px-3 py-2 font-pixel text-[10px] leading-[16px] whitespace-nowrap uppercase opacity-0 shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-[opacity,transform] duration-200 ease-[steps(3,end)] translate-x-2 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100 max-md:hidden">
+      <span className="pointer-events-none bg-ink-2/90 px-3 py-2 font-pixel text-[12px] leading-[19px] whitespace-nowrap uppercase opacity-0 shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-[opacity,transform] duration-200 ease-[steps(3,end)] translate-x-2 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100 max-md:hidden">
         Связаться
       </span>
       <span className="relative grid size-[60px] place-items-center">
@@ -81,6 +112,7 @@ export function ContactModal() {
   const [open, setOpen] = useState(false);
   // Remounts the form on every open, so a sent form starts fresh next time.
   const [session, setSession] = useState(0);
+  const overHero = useOverHeroOnPhone();
 
   const show = useCallback(() => {
     const d = dialogRef.current;
@@ -120,7 +152,7 @@ export function ContactModal() {
 
   return (
     <>
-      <QuickContact hidden={open} />
+      <QuickContact hidden={open || overHero} />
       <dialog
         ref={dialogRef}
         aria-labelledby="contact-modal-title"
@@ -158,7 +190,7 @@ export function ContactModal() {
               >
                 {contact.heading}
               </h2>
-              <p className="max-w-[420px] text-sm leading-[22.4px] font-light tracking-[0.02em] text-white/85">
+              <p className="max-w-[420px] text-base leading-[25.5px] font-light tracking-[0.02em] text-white/85">
                 {contact.lead}
               </p>
             </div>
@@ -168,7 +200,7 @@ export function ContactModal() {
               className="border-t border-line bg-ink"
             />
 
-            <p className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-line px-5 py-4 font-mono text-[13px] text-muted md:px-[30px]">
+            <p className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-line px-5 py-4 font-mono text-[15px] text-muted md:px-[30px]">
               Или сразу:
               <a
                 href={`tel:${footer.phone.replace(/\s/g, "")}`}

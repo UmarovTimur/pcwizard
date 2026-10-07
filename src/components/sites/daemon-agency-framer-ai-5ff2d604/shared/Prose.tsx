@@ -22,7 +22,7 @@ function Inline({ text }: { text: string }) {
   return <>{parts}</>;
 }
 
-const text = "text-base leading-7 font-light tracking-[0.01em] text-white/85";
+const text = "text-lg leading-7 font-light tracking-[0.01em] text-white/85";
 
 function Bullet() {
   return <span aria-hidden="true" className="mt-[11px] size-[5px] shrink-0 bg-violet shadow-[0_0_8px_rgba(168,85,247,0.8)]" />;
@@ -42,7 +42,7 @@ export function Prose({ blocks, className }: { blocks: Block[]; className?: stri
             );
           case "h3":
             return (
-              <h3 key={i} className="mt-3 font-pixel text-[12px] leading-[22px] uppercase">
+              <h3 key={i} className="mt-3 font-pixel text-[14px] leading-[25.5px] uppercase">
                 {b.text}
               </h3>
             );
@@ -70,7 +70,7 @@ export function Prose({ blocks, className }: { blocks: Block[]; className?: stri
               <ol key={i} className="flex flex-col gap-3">
                 {b.items.map((item, n) => (
                   <li key={item} className={cn("flex gap-4", text)}>
-                    <span aria-hidden="true" className="mt-[3px] w-6 shrink-0 font-pixel text-[11px] leading-6 text-violet">
+                    <span aria-hidden="true" className="mt-[3px] w-6 shrink-0 font-pixel text-[13px] leading-6 text-violet">
                       {String(n + 1).padStart(2, "0")}
                     </span>
                     <span>
@@ -83,11 +83,11 @@ export function Prose({ blocks, className }: { blocks: Block[]; className?: stri
           case "table":
             return (
               <div key={i} className="-mx-5 overflow-x-auto px-5 md:mx-0 md:px-0">
-                <table className="w-full min-w-[480px] border-collapse border border-line text-left text-sm leading-[22px] font-light">
+                <table className="w-full min-w-[480px] border-collapse border border-line text-left text-base leading-[25px] font-light">
                   <thead>
                     <tr className="bg-white/[0.04]">
                       {b.head.map((h, c) => (
-                        <th key={c} scope="col" className="border border-line px-4 py-3 font-pixel text-[9px] leading-[18px] font-normal uppercase">
+                        <th key={c} scope="col" className="border border-line px-4 py-3 font-pixel text-[11px] leading-[22px] font-normal uppercase">
                           {h}
                         </th>
                       ))}
@@ -134,13 +134,13 @@ export function FaqList({ items }: { items: FaqItem[] }) {
       {items.map((item) => (
         <details key={item.q} className="group bg-white/[0.02] open:bg-white/[0.04]">
           <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-5 pr-3 pl-[22px] transition-colors hover:bg-white/[0.05] [&::-webkit-details-marker]:hidden">
-            <h3 className="font-mono text-[13px] leading-[20.8px] uppercase">{item.q}</h3>
+            <h3 className="font-mono text-[15px] leading-[24px] uppercase">{item.q}</h3>
             <span aria-hidden="true" className="relative size-6 shrink-0 transition-transform duration-300 group-open:rotate-45">
               <span className="absolute top-1/2 left-1/2 h-px w-3.5 -translate-x-1/2 bg-white" />
               <span className="absolute top-1/2 left-1/2 h-3.5 w-px -translate-y-1/2 bg-white" />
             </span>
           </summary>
-          <p className="px-[22px] pb-5 text-sm leading-[22.4px] font-light tracking-[0.02em] text-muted">{item.a}</p>
+          <p className="px-[22px] pb-5 text-base leading-[25.5px] font-light tracking-[0.02em] text-muted">{item.a}</p>
         </details>
       ))}
     </div>

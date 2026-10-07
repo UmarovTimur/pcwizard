@@ -32,10 +32,10 @@ function ServiceCell({
     <div className={cn("relative flex h-[430px] flex-col gap-5 bg-ink p-[30px] max-md:h-[320px]", textAt === "bottom" && "justify-end")}>
       <PixelIcon pattern={pattern} className={cn("absolute right-[30px]", iconAt === "top-right" ? "top-[30px]" : "bottom-[30px]")} />
       <Reveal className="flex w-[219px] flex-col gap-[13px]">
-        <h3 className="font-pixel text-[13px] leading-[22px] uppercase">{title}</h3>
-        <p className="text-sm leading-[22.4px] font-light tracking-[0.02em] text-muted">{text}</p>
+        <h3 className="font-pixel text-[15px] leading-[25.5px] uppercase">{title}</h3>
+        <p className="text-base leading-[25.5px] font-light tracking-[0.02em] text-muted">{text}</p>
         {href && (
-          <Link href={href} className="group flex w-fit items-center gap-2 font-pixel text-[9px] leading-[18px] uppercase hover:text-lavender">
+          <Link href={href} className="group flex w-fit items-center gap-2 font-pixel text-[11px] leading-[22px] uppercase hover:text-lavender">
             Подробнее
             <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={1.25} aria-hidden="true" />
           </Link>
@@ -64,7 +64,7 @@ export function Services() {
       </div>
       <Noise />
 
-      <div className="relative z-[2] w-full px-5 md:w-[1100px] md:px-0">
+      <div className="relative z-[2] w-full px-5 md:w-full md:max-w-[1100px] md:px-0">
         {/* Row 1: intro + first service */}
         <div className="relative grid border-t border-line md:grid-cols-2">
           <RowCrosses />
@@ -75,7 +75,7 @@ export function Services() {
                 {services.heading}
               </Reveal>
             </div>
-            <p className="max-w-[300px] text-[15px] leading-6 font-light tracking-[0.02em]">{services.lead}</p>
+            <p className="max-w-[300px] text-[17px] leading-[27px] font-light tracking-[0.02em]">{services.lead}</p>
             <Noise />
           </div>
           <ServiceCell {...a} pattern={PATTERNS[0]} textAt="top" iconAt="bottom-right" />
@@ -98,7 +98,7 @@ export function Services() {
           <div className="relative flex h-[430px] flex-col justify-end gap-5 overflow-hidden bg-ink p-[30px] max-md:h-auto max-md:pt-16">
             <Noise />
             <div className="relative z-[2] flex flex-col gap-5">
-              <p className="max-w-[400px] text-[15px] leading-6 font-light tracking-[0.02em]">{services.cta.text}</p>
+              <p className="max-w-[400px] text-[17px] leading-[27px] font-light tracking-[0.02em]">{services.cta.text}</p>
               <KeyButton href={services.cta.href}>{services.cta.label}</KeyButton>
             </div>
           </div>

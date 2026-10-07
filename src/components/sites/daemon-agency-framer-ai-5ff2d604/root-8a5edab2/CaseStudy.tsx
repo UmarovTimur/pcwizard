@@ -56,12 +56,12 @@ function Gauge({ value, label }: { value: number; label: string }) {
             );
           })}
         </svg>
-        <span className="absolute inset-0 flex items-center justify-center font-mono text-sm text-ink">
+        <span className="absolute inset-0 flex items-center justify-center font-mono text-base text-ink">
           {shown}
           <span className="mt-1 text-[8px]">%</span>
         </span>
       </div>
-      <p className="flex gap-2.5 font-mono text-xs leading-[18px] tracking-[-0.03em] text-ink">
+      <p className="flex gap-2.5 font-mono text-[14px] leading-[21px] tracking-[-0.03em] text-ink">
         <span aria-hidden="true" className="mt-[5px] size-[7px] shrink-0 bg-ink" />
         {label}
       </p>
@@ -89,7 +89,7 @@ export function CaseStudy() {
 
       <div className="relative flex flex-col justify-between gap-16 px-5 pt-[140px] pb-[140px] md:w-[550px] md:px-0 md:pl-2.5 max-md:pb-10">
         <div className="flex flex-col gap-[30px]">
-          <Reveal as="p" className="max-w-[375px] text-[15px] leading-6 font-light tracking-[0.02em]">
+          <Reveal as="p" className="max-w-[375px] text-[17px] leading-[27px] font-light tracking-[0.02em]">
             {caseStudy.intro}
           </Reveal>
           <Reveal as="h2" className="max-w-[350px] font-display text-[32px] leading-[33px] tracking-[-0.02em] uppercase">
@@ -117,8 +117,8 @@ export function CaseStudy() {
         </div>
         <div className="flex flex-col gap-[15px]">
           <figure className="flex max-w-[450px] flex-col gap-3.5">
-            <blockquote className="text-[15px] leading-6 font-light tracking-[0.02em]">{caseStudy.quote}</blockquote>
-            <figcaption className="font-mono text-[13px] leading-[20.8px] text-black/70 uppercase">{caseStudy.author}</figcaption>
+            <blockquote className="text-[17px] leading-[27px] font-light tracking-[0.02em]">{caseStudy.quote}</blockquote>
+            <figcaption className="font-mono text-[15px] leading-[24px] text-black/70 uppercase">{caseStudy.author}</figcaption>
           </figure>
           <ul className="flex max-w-[400px] flex-wrap gap-x-5 gap-y-[9px] opacity-40">
             {caseStudy.logos.map((l) => (

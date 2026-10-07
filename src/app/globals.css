@@ -10,7 +10,7 @@
   --color-violet: #a855f7;
   --color-fuchsia: #d946ef;
   --color-lavender: #e9d5ff;
-  --font-display: var(--font-oswald), "Arial Narrow", sans-serif;
+  --font-display: var(--font-science), var(--font-onest), sans-serif;
   --font-body: var(--font-onest), system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
   --font-logo: var(--font-coda), sans-serif;
@@ -42,11 +42,19 @@ body {
   background: #0b0614;
 }
 
-/* Neon glow on display headings, as on the promo banner */
+/* Section headings share the hero headline's face: Science Gothic, heavy, slightly condensed
+   so long Russian words fit. Unlayered, so it wins over per-heading tracking utilities. */
 .font-display {
-  text-shadow:
-    0 0 18px rgba(168, 85, 247, 0.55),
-    0 0 42px rgba(217, 70, 239, 0.25);
+  font-weight: 800;
+  font-variation-settings: "wdth" 65;
+  letter-spacing: 0;
+  text-shadow: 0 0 18px rgba(168, 85, 247, 0.28);
+}
+
+@media (min-width: 768px) {
+  .font-display {
+    font-variation-settings: "wdth" 80;
+  }
 }
 
 .on-light .font-display {

@@ -52,9 +52,9 @@ interface Wave {
  * `density`: multiplier for how many cells are lit (1 = default).
  * `fade`: share of the field at the dense edge over which pixels thin out and dim
  *   to nothing, so the field ends softly instead of at a hard edge (0 = no fade).
- * `cover`: a photo inside the section (matched by `selector`) laid under the canvas. Its
+ * `covers`: photos inside the section (each matched by `selector`) laid under the canvas. Their
  *   edges are eaten by ink squares on the same grid, with field pixels twinkling among them,
- *   and the cursor waves run across the photo too — so photo and field read as one surface.
+ *   and the cursor waves run across the photos too — so photo and field read as one surface.
  */
 export function PixelField({
   className,
@@ -62,18 +62,18 @@ export function PixelField({
   direction = "up",
   density = 1,
   fade = 0,
-  cover,
+  covers,
 }: {
   className?: string;
   start?: number;
   direction?: "up" | "down";
   density?: number;
   fade?: number;
-  cover?: PixelCover;
+  covers?: PixelCover[];
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // Compared by value, so a re-rendered parent passing an equal object doesn't rebuild the field.
-  const coverKey = JSON.stringify(cover ?? null);
+  const coverKey = JSON.stringify(covers ?? []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -82,8 +82,10 @@ export function PixelField({
     if (!canvas || !target || !ctx) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const coverOpt = JSON.parse(coverKey) as PixelCover | null;
-    const coverEl = coverOpt ? target.querySelector<HTMLElement>(coverOpt.selector) : null;
+    const coverEls = (JSON.parse(coverKey) as PixelCover[]).flatMap((opt) => {
+      const el = target.querySelector<HTMLElement>(opt.selector);
+      return el ? [{ opt, el }] : [];
+    });
     let cells: Cell[] = [];
     let inks: { x: number; y: number }[] = []; // ink squares over the photo edges
     let photo: { x: number; y: number }[] = []; // a sparse set of photo cells the cursor waves light up
@@ -130,17 +132,20 @@ export function PixelField({
       buildCover();
     };
 
-    // Grid cells over the photo: solid ink near its edges thinning inward, a twinkling field
-    // pixel on some of them; field pixels over the clear part of the photo are dropped.
+    // Grid cells over each photo: solid ink near its edges thinning inward, a twinkling field
+    // pixel on some of them; field pixels over the clear part of a photo are dropped.
     const buildCover = () => {
       inks = [];
       photo = [];
-      if (!coverOpt || !coverEl) return;
-      const box = coverEl.getBoundingClientRect();
       const origin = canvas.getBoundingClientRect();
-      const bx = box.left - origin.left;
-      const by = box.top - origin.top;
-      const e = (window.matchMedia("(min-width: 1024px)").matches && coverOpt.edgesLg) || coverOpt.edges;
+      const lg = window.matchMedia("(min-width: 1024px)").matches;
+      for (const { opt, el } of coverEls) {
+        const box = el.getBoundingClientRect();
+        if (box.width && box.height) coverOne(box.left - origin.left, box.top - origin.top, box, (lg && opt.edgesLg) || opt.edges);
+      }
+    };
+
+    const coverOne = (bx: number, by: number, box: DOMRect, e: DissolveEdges) => {
       const side = (pos: number, size: number, share = 0) => (share > 0 ? Math.max(0, 1 - pos / (size * share)) : 0);
       const ink = new Set<number>();
       const cols = Math.ceil(width / CELL);
@@ -249,7 +254,7 @@ export function PixelField({
       if (reduced && !frame) frame = requestAnimationFrame(draw);
     });
     ro.observe(canvas);
-    if (coverEl) ro.observe(coverEl);
+    for (const { el } of coverEls) ro.observe(el);
     target.addEventListener("pointermove", onMove);
     target.addEventListener("pointerleave", onLeave);
 

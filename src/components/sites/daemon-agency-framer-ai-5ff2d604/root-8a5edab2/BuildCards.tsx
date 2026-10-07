@@ -41,10 +41,10 @@ export function BuildCards() {
             <Link href={`/blog/${b.slug}`} className="group flex h-full flex-col gap-5 bg-ink p-[26px] transition-colors hover:bg-white/[0.03]">
               <h3 className="flex flex-col gap-1">
                 <span className="neon-fill w-fit font-pixel text-[26px] leading-[34px]" data-text={b.budget}>{b.budget}</span>
-                <span className="font-pixel text-[9px] leading-[18px] text-muted uppercase">млн сум</span>
+                <span className="font-pixel text-[11px] leading-[22px] text-muted uppercase">млн сум</span>
               </h3>
-              <p className="font-mono text-[13px] leading-[20px] uppercase">{b.target}</p>
-              <dl className="flex flex-col gap-2 text-[13px] leading-[19px] font-light">
+              <p className="font-mono text-[15px] leading-[23px] uppercase">{b.target}</p>
+              <dl className="flex flex-col gap-2 text-[15px] leading-[22px] font-light">
                 {b.parts.slice(0, 2).map((p) => (
                   <div key={p.part}>
                     <dt className="text-muted">{p.part}</dt>
@@ -52,7 +52,7 @@ export function BuildCards() {
                   </div>
                 ))}
               </dl>
-              <span className="mt-auto flex items-center gap-2 font-pixel text-[9px] leading-[18px] uppercase">
+              <span className="mt-auto flex items-center gap-2 font-pixel text-[11px] leading-[22px] uppercase">
                 Вся сборка
                 <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={1.25} aria-hidden="true" />
               </span>

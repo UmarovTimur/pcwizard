@@ -25,19 +25,19 @@ export function Works() {
         <span className="absolute inset-y-0 left-[calc(50%+365px)] w-px bg-line" />
       </div>
 
-      <div className="relative z-[2] grid w-full border-t border-line px-5 md:w-[1100px] md:grid-cols-2 md:px-0">
+      <div className="relative z-[2] grid w-full border-t border-line px-5 md:w-full md:max-w-[1100px] md:grid-cols-2 md:px-0">
         <Cross className="top-0 left-0" />
         <Cross className="top-0 left-1/2" />
         <Cross className="top-0 left-full" />
         <div className="relative flex flex-col gap-5 bg-ink pt-[30px] pr-10 pb-[70px] pl-[30px] max-md:px-0">
           <Tag>{works.tag}</Tag>
-          <Reveal as="h2" className="max-w-[400px] font-display text-[80px] leading-[81px] tracking-[-0.02em] uppercase max-md:text-[52px] max-md:leading-[54px]">
+          <Reveal as="h2" className="max-w-[480px] font-display text-[46px] leading-[1] uppercase md:text-[60px] lg:text-[76px]">
             {works.heading}
           </Reveal>
           <Noise />
         </div>
         <div className="flex flex-col justify-end gap-10 pb-[70px] pl-2.5 max-md:pl-0">
-          <p className="max-w-[355px] text-[15px] leading-6 font-light tracking-[0.02em]">{works.lead}</p>
+          <p className="max-w-[355px] text-[17px] leading-[27px] font-light tracking-[0.02em]">{works.lead}</p>
           <div className="flex gap-2.5">
             <button type="button" onClick={() => go(-1)} aria-label="Предыдущая сборка" className="flex size-10 items-center justify-center transition-opacity hover:opacity-60">
               <ChevronLeft className="size-6" strokeWidth={1.5} />

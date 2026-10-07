@@ -25,7 +25,7 @@ export function Team() {
 
       <div className="relative z-[2] flex flex-col items-center gap-5 px-5 pt-[30px] text-center">
         <Tag>{team.tag}</Tag>
-        <Reveal as="h2" className="font-display text-[80px] leading-[81px] tracking-[-0.02em] uppercase max-md:text-[44px] max-md:leading-[46px]">
+        <Reveal as="h2" className="font-display text-[34px] leading-[1.05] uppercase md:text-[56px] lg:text-[72px]">
           {team.heading.map((l) => (
             <span key={l} className="block">
               {l}
@@ -45,9 +45,9 @@ export function Team() {
         >
           <div className="relative border-l border-white/60 pt-2.5 pr-4 pb-4 pl-4">
             <span aria-hidden="true" className="absolute top-0 left-0 h-px w-[110px] bg-white/60" />
-            <p className="font-pixel text-[11px] leading-[20.8px] uppercase">{member.name}</p>
-            <p className="mt-[7px] font-mono text-xs leading-[18px] tracking-[-0.03em] text-muted">{member.role}</p>
-            <p className="mt-3 text-[15px] leading-[22.5px] font-light tracking-[0.02em]">{member.quote}</p>
+            <p className="font-pixel text-[13px] leading-[24.5px] uppercase">{member.name}</p>
+            <p className="mt-[7px] font-mono text-[14px] leading-[21px] tracking-[-0.03em] text-muted">{member.role}</p>
+            <p className="mt-3 text-[17px] leading-[25.5px] font-light tracking-[0.02em]">{member.quote}</p>
           </div>
         </div>
 

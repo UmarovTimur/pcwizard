@@ -77,9 +77,9 @@ export default async function BuildPage({ params }: Props) {
         meta={
           <div className="flex flex-wrap items-center gap-3">
             <StatusBadge status={build.status} />
-            <p className="font-pixel text-[13px] leading-[20px] text-[#4ade80] [text-shadow:0_0_8px_rgba(74,222,128,0.6)]">{formatBuildPrice(price)}</p>
+            <p className="font-pixel text-[15px] leading-[23px] text-[#4ade80] [text-shadow:0_0_8px_rgba(74,222,128,0.6)]">{formatBuildPrice(price)}</p>
             {price.oldUsd && price.oldUzs && (
-              <p className="font-pixel text-[10px] leading-[16px] text-muted line-through">{formatBuildPrice({ usd: price.oldUsd, uzs: price.oldUzs })}</p>
+              <p className="font-pixel text-[12px] leading-[19px] text-muted line-through">{formatBuildPrice({ usd: price.oldUsd, uzs: price.oldUzs })}</p>
             )}
           </div>
         }

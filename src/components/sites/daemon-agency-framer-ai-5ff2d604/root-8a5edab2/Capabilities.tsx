@@ -53,7 +53,7 @@ export function Capabilities() {
                 style={{ transform: `translateX(${(1 - eased) * 1320}px)` }}
               >
                 <span aria-hidden="true" className="mt-1 size-[7px] shrink-0 bg-white" />
-                <span className="max-w-[160px] font-mono text-[13px] leading-[19.5px] tracking-[-0.03em]">{item}</span>
+                <span className="max-w-[160px] font-mono text-[15px] leading-[22.5px] tracking-[-0.03em]">{item}</span>
               </li>
             );
           })}

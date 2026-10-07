@@ -41,7 +41,7 @@ export function Gallery({ title, photos, start = 0, onClose }: { title: string; 
       {photos && (
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between gap-4 px-5 py-4 md:px-10">
-            <p className="font-pixel text-[11px] leading-[18px] uppercase md:text-[13px]">
+            <p className="font-pixel text-[13px] leading-[21.5px] uppercase md:text-[15px]">
               {title}
               <span className="ml-4 text-muted">
                 {index + 1}/{count}
