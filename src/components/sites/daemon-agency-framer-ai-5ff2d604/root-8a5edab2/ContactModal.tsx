@@ -105,18 +105,22 @@ function QuickContact({ hidden }: { hidden: boolean }) {
 /**
  * Request form in a popup. Mounted once in the root layout: any link to "#contact"
  * (CTA buttons, the menu item, pricing cards) opens it instead of scrolling to the
- * contact section. Native <dialog> gives focus trapping and Escape for free.
+ * contact section. Wrap a link in an element with `data-service` to preselect the service.
+ * Native <dialog> gives focus trapping and Escape for free.
  */
 export function ContactModal() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
   // Remounts the form on every open, so a sent form starts fresh next time.
   const [session, setSession] = useState(0);
+  // Service preselected by the link that opened the popup (its data-service wrapper).
+  const [service, setService] = useState<string>();
   const overHero = useOverHeroOnPhone();
 
-  const show = useCallback(() => {
+  const show = useCallback((preset?: string) => {
     const d = dialogRef.current;
     if (!d || d.open) return;
+    setService(preset);
     setSession((n) => n + 1);
     d.showModal();
     setOpen(true);
@@ -144,7 +148,7 @@ export function ContactModal() {
       );
       if (!link) return;
       e.preventDefault();
-      show();
+      show(link.closest<HTMLElement>("[data-service]")?.dataset.service);
     };
     document.addEventListener("click", onClick, true);
     return () => document.removeEventListener("click", onClick, true);
@@ -197,6 +201,7 @@ export function ContactModal() {
 
             <ContactForm
               key={session}
+              service={service}
               className="border-t border-line bg-ink"
             />
 

@@ -11,7 +11,7 @@ import { brand, footer, nav } from "./content";
 // Menu open/close time: the pixel fill, then the links follow right behind it.
 const MENU_MS = 200;
 
-/** Fixed logo and menu button (each on a dark translucent backing), menu panel and the scrolling phone link. */
+/** Fixed header: logo, phone link and menu button (each on a dark translucent backing), and the menu panel. */
 export function Header() {
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -51,15 +51,15 @@ export function Header() {
         </div>
       </div>
 
-      {/* Phone: at the top of the page, between logo and menu button, but scrolls away (not fixed) */}
+      {/* Phone: fixed in the header between logo and menu button, on its own dark backing like them */}
       {/* Same row box as the logo (pt-14 + 48/52px), so it lines up with the logo and the menu button */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-50 flex justify-center pt-[14px]">
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center pt-[14px]">
         <div className="flex h-12 w-full max-w-[1180px] items-center justify-end px-5 pr-[54px] md:h-[52px] md:px-10 md:pr-[85px]">
           <a
             href={`tel:${footer.phone.replace(/\s/g, "")}`}
             aria-label={`Позвонить: ${footer.phone}`}
             data-pixel-avoid
-            className="group pointer-events-auto flex items-center gap-1.5 py-2 font-pixel min-[400px]:gap-2.5 text-[10px] leading-[22px] whitespace-nowrap text-white transition-colors hover:text-lavender min-[400px]:text-[11px] md:text-[14px]"
+            className="group pointer-events-auto flex items-center gap-1.5 rounded-lg bg-ink/60 px-2 py-2 font-pixel backdrop-blur-sm md:px-3 min-[400px]:gap-2.5 text-[10px] leading-[22px] whitespace-nowrap text-white transition-colors hover:text-lavender min-[400px]:text-[11px] md:text-[14px]"
           >
             <span aria-hidden="true" className="relative flex size-2">
               <span className="absolute inset-0 animate-ping bg-[#4ade80] opacity-60" />

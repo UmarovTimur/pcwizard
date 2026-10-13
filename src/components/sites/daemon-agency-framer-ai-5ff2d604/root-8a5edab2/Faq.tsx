@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Cross, KeyButton, Noise } from "../shared/primitives";
 import { Reveal } from "../shared/motion";
+import { StickerSwarm } from "../shared/StickerSwarm";
 import { faq } from "./content";
 
-/** Click-driven accordion: one item open at a time, "+" rotates to "×". */
+/** Click-driven accordion: one item open at a time, "+" rotates to "×". Stickers pop out under the cursor around it. */
 export function Faq() {
   const [open, setOpen] = useState<number | null>(null);
+  const content = useRef<HTMLDivElement>(null);
 
   return (
     <section id="faq" className="relative flex justify-center overflow-hidden pt-[200px]">
@@ -18,8 +20,9 @@ export function Faq() {
         <span className="absolute inset-y-0 left-1/2 w-px bg-line" />
         <span className="absolute inset-y-0 left-[calc(50%+365px)] w-px bg-line" />
       </div>
+      <StickerSwarm avoid={content} className="z-[1]" />
 
-      <div className="relative z-[2] grid w-full border-y border-line px-5 md:w-full md:max-w-[730px] md:grid-cols-2 md:px-0">
+      <div ref={content} className="relative z-[2] grid w-full border-y border-line px-5 md:w-full md:max-w-[730px] md:grid-cols-2 md:px-0">
         <Cross className="top-0 left-0" />
         <Cross className="top-0 left-1/2" />
         <Cross className="top-0 left-full" />

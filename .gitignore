@@ -9,6 +9,9 @@ out/
 build/
 dist/
 
+# Payload uploads (product photos): keep on a persistent volume on the server
+/media/
+
 # Environment
 .env
 .env.local

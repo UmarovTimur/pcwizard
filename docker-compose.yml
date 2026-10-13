@@ -17,6 +17,9 @@ services:
         required: false
       - path: .env
         required: false
+    # Product photos from the admin panel survive rebuilds
+    volumes:
+      - ./media:/app/media
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:3000/ || exit 1"]
       interval: 30s

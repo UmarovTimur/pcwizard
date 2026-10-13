@@ -11,6 +11,7 @@ export const nav = [
   { label: "Главная", href: "/" },
   { label: "Игровые ПК", href: "/igrovye-pk" },
   { label: "Сборка ПК", href: "/sborka-kompyutera" },
+  { label: "Каталог", href: "/catalog" },
   { label: "Портфолио", href: "/portfolio" },
   { label: "Цены", href: "/#pricing" },
   { label: "Блог", href: "/blog" },

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { KeyButton, Noise, Placeholder, Tag } from "../shared/primitives";
+import { PixelCity } from "../shared/PixelCity";
 import { Reveal } from "../shared/motion";
 import { team } from "./content";
 
@@ -17,6 +18,8 @@ export function Team() {
   return (
     <section id="team" className="relative flex flex-col items-center gap-10 overflow-hidden pt-[200px]">
       <Noise />
+      {/* Drifting pixel night city above the heading */}
+      <PixelCity scene="night" className="top-0 opacity-90" />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden md:block">
         <span className="absolute inset-y-0 left-[calc(50%-365px)] w-px bg-line" />
         <span className="absolute inset-y-0 left-1/2 w-px bg-line" />

@@ -29,6 +29,17 @@ const C_SHADE = 11; // 11..14
 const C_HOT = 15;
 const C_CHARGE = 16;
 const PALETTE = ["", RIM, SEAM, ...LIT, ...FRONT, ...SHADE, HOT, CHARGE];
+// The back row: the same facets, dimmed to dusk, so they read as depth behind the front row
+const BACK_PALETTE = [
+  "",
+  "#160b2b",
+  SEAM,
+  ...["#2a1352", "#3a1b70", "#4b258d", "#5d31a8"],
+  ...["#1f0e40", "#2c1559", "#3a1d73", "#4a278e"],
+  ...["#150a2e", "#1d0d3f", "#271352", "#321a66"],
+  HOT,
+  CHARGE,
+];
 
 interface Shard {
   x: number; // root, cells (sunk a little below the bottom edge)
@@ -73,8 +84,21 @@ const randInt = (a: number, b: number) => Math.floor(rand(a, b + 1));
  * from the pointer into the nearest tip and shatters that shard.
  *
  * `reach`: how far up the crystals may grow, as a share of the field's height.
+ * `back`: a dim, quiet back row to layer under a front one: the shards only grow and shrink,
+ *   with no pulses, arcs or shattering, and ignore scrolling and clicks.
+ * `glow`: the crystals cast light: a tight halo and a wide soft one in their own colours.
  */
-export function PixelField({ className, reach = 0.32 }: { className?: string; reach?: number }) {
+export function PixelField({
+  className,
+  reach = 0.32,
+  back = false,
+  glow = false,
+}: {
+  className?: string;
+  reach?: number;
+  back?: boolean;
+  glow?: boolean;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -102,21 +126,32 @@ export function PixelField({ className, reach = 0.32 }: { className?: string; re
     let bits: Bit[] = [];
     let bolts: Bolt[] = [];
     let stars: { c: number; r: number; t: number }[] = [];
+    // Glow: the colour grid at one pixel per cell, then shrunk twice; drawn back up with smoothing
+    // these turn into a tight and a wide blur for the cost of two tiny images, not a CSS filter.
+    const glowCells = document.createElement("canvas");
+    const glowNear = document.createElement("canvas");
+    const glowFar = document.createElement("canvas");
+    let glowData: ImageData | null = null;
     let surge = 0; // extra power from scrolling and clicks, decays each step
     let tick = 0;
     let frame = 0;
     let last = 0;
 
     // Distance (cells) from every cell to the nearest padded text box: two-pass chamfer.
-    const buildRoom = (ox: number, oy: number) => {
+    const buildRoom = (rect: DOMRect) => {
       room = new Float32Array(cols * rows).fill(999);
       for (const el of avoidEls) {
         const box = el.getBoundingClientRect();
         if (!box.width || !box.height) continue;
-        const c0 = Math.max(0, Math.floor((box.left - ox - AVOID_PAD) / cell));
-        const c1 = Math.min(cols - 1, Math.floor((box.right - ox + AVOID_PAD) / cell));
-        const r0 = Math.max(0, Math.floor((box.top - oy - AVOID_PAD) / cell));
-        const r1 = Math.min(rows - 1, Math.floor((box.bottom - oy + AVOID_PAD) / cell));
+        // Box relative to the grid
+        const left = box.left - rect.left - offX;
+        const right = box.right - rect.left - offX;
+        const top = box.top - rect.top - offY;
+        const bottom = box.bottom - rect.top - offY;
+        const c0 = Math.max(0, Math.floor((left - AVOID_PAD) / cell));
+        const c1 = Math.min(cols - 1, Math.floor((right + AVOID_PAD) / cell));
+        const r0 = Math.max(0, Math.floor((top - AVOID_PAD) / cell));
+        const r1 = Math.min(rows - 1, Math.floor((bottom + AVOID_PAD) / cell));
         for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) room[r * cols + c] = 0;
       }
       const D = Math.SQRT2;
@@ -189,13 +224,16 @@ export function PixelField({ className, reach = 0.32 }: { className?: string; re
         }
       };
 
-      // Big clusters leaning in from both corners, then smaller ones packed in between
-      cluster(rand(-1, 2), span * 1.05, 0.3, randInt(4, 6));
-      cluster(cols - 1 - rand(-1, 2), span * 1.05, -0.3, randInt(4, 6));
-      for (let x = rand(5, 9); x < cols - 5; ) {
+      // Big clusters leaning in from both corners, then smaller ones packed in between.
+      // The back row is packed tighter and grows taller, so it peeks out above the front one.
+      const corner = back ? randInt(5, 7) : randInt(4, 6);
+      cluster(rand(-1, 2), span * 1.05, 0.3, corner);
+      cluster(cols - 1 - rand(-1, 2), span * 1.05, -0.3, corner);
+      for (let x = rand(3, 9); x < cols - 3; ) {
         const edge = Math.min(x, cols - x) / Math.max(1, cols); // 0 at the sides, 0.5 in the middle
-        cluster(x, span * Math.max(0.3, 0.95 - edge * 1.3) * rand(0.75, 1.1), rand(-0.12, 0.12), randInt(2, 4));
-        x += rand(6, 11) * Math.max(1, span / 30);
+        const tall = back ? Math.max(0.5, 1.05 - edge * 1.1) : Math.max(0.3, 0.95 - edge * 1.3);
+        cluster(x, span * tall * rand(0.75, 1.1), rand(-0.12, 0.12), back ? randInt(3, 5) : randInt(2, 4));
+        x += (back ? rand(3.5, 7) : rand(6, 11)) * Math.max(1, span / 30);
       }
       // Back to front: random depth, so shards cross in front of their neighbours
       shards.sort(() => Math.random() - 0.5);
@@ -214,11 +252,18 @@ export function PixelField({ className, reach = 0.32 }: { className?: string; re
       offY = height - rows * cell;
       ctx.setTransform(dpr, 0, 0, dpr, dpr * offX, dpr * offY);
       const rect = canvas.getBoundingClientRect();
-      buildRoom(rect.left + offX, rect.top + offY);
+      buildRoom(rect);
       owner = new Int16Array(cols * rows);
       color = new Uint8Array(cols * rows);
       bits = [];
       bolts = [];
+      glowCells.width = cols;
+      glowCells.height = rows;
+      glowNear.width = Math.max(1, Math.round(cols / 3));
+      glowNear.height = Math.max(1, Math.round(rows / 3));
+      glowFar.width = Math.max(1, Math.round(cols / 9));
+      glowFar.height = Math.max(1, Math.round(rows / 9));
+      glowData = glow ? new ImageData(cols, rows) : null;
       stars = [];
       buildShards();
       step();
@@ -265,8 +310,8 @@ export function PixelField({ className, reach = 0.32 }: { className?: string; re
       const t = tick * STEP * 0.001;
       const bright = surge > 0.7 ? 1 : 0; // a surge lights every facet up a band
 
-      // New pulses of energy, many more under a surge
-      const fire = 0.1 + surge * 0.6;
+      // New pulses of energy, many more under a surge (none in the back row)
+      const fire = back ? 0 : 0.1 + surge * 0.6;
       for (let n = Math.floor(fire) + (Math.random() < fire % 1 ? 1 : 0); n > 0 && shards.length; n--) {
         const s = shards[(Math.random() * shards.length) | 0];
         if (s.charge < 0 && s.grow >= 1) {
@@ -275,7 +320,7 @@ export function PixelField({ className, reach = 0.32 }: { className?: string; re
         }
       }
       // Now and then a shard shatters by itself
-      if (shards.length && Math.random() < 0.012) {
+      if (!back && shards.length && Math.random() < 0.012) {
         const s = shards[(Math.random() * shards.length) | 0];
         if (s.grow >= 1 && s.cur > 4) shatter(s);
       }
@@ -347,7 +392,7 @@ export function PixelField({ className, reach = 0.32 }: { className?: string; re
         }
 
       // Arcs between the tips of neighbouring shards
-      if (shards.length > 1 && Math.random() < 0.015 + surge * 0.05) {
+      if (!back && shards.length > 1 && Math.random() < 0.015 + surge * 0.05) {
         const a = shards[(Math.random() * shards.length) | 0];
         const [ax, ay] = tipOf(a);
         const near = shards.filter((b) => {
@@ -373,8 +418,10 @@ export function PixelField({ className, reach = 0.32 }: { className?: string; re
 
     const draw = () => {
       ctx.clearRect(-offX, -offY, width, height);
-      for (let k = 1; k < PALETTE.length; k++) {
-        ctx.fillStyle = PALETTE[k];
+      const palette = back ? BACK_PALETTE : PALETTE;
+      if (glowData) drawGlow(palette);
+      for (let k = 1; k < palette.length; k++) {
+        ctx.fillStyle = palette[k];
         for (let i = 0; i < color.length; i++) {
           if (color[i] !== k) continue;
           const c = i % cols;
@@ -425,9 +472,44 @@ export function PixelField({ className, reach = 0.32 }: { className?: string; re
       }
     };
 
+    const rgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+    const drawGlow = (palette: string[]) => {
+      const gc = glowCells.getContext("2d");
+      const gn = glowNear.getContext("2d");
+      const gf = glowFar.getContext("2d");
+      if (!glowData || !gc || !gn || !gf) return;
+      const lit = palette.map((c, k) => (k > C_SEAM && c ? rgb(c) : null));
+      const px = glowData.data;
+      for (let i = 0; i < color.length; i++) {
+        const c = lit[color[i]];
+        const o = i * 4;
+        if (!c) {
+          px[o + 3] = 0;
+          continue;
+        }
+        px[o] = c[0];
+        px[o + 1] = c[1];
+        px[o + 2] = c[2];
+        px[o + 3] = 255;
+      }
+      gc.putImageData(glowData, 0, 0);
+      gn.clearRect(0, 0, glowNear.width, glowNear.height);
+      gn.drawImage(glowCells, 0, 0, glowNear.width, glowNear.height);
+      gf.clearRect(0, 0, glowFar.width, glowFar.height);
+      gf.drawImage(glowNear, 0, 0, glowFar.width, glowFar.height);
+      ctx.save();
+      ctx.imageSmoothingEnabled = true;
+      ctx.globalCompositeOperation = "lighter";
+      ctx.globalAlpha = 0.9;
+      ctx.drawImage(glowFar, -cell * 4, -cell * 4, (cols + 8) * cell, (rows + 8) * cell);
+      ctx.globalAlpha = 0.55;
+      ctx.drawImage(glowNear, -cell, -cell, (cols + 2) * cell, (rows + 2) * cell);
+      ctx.restore();
+    };
+
     const loop = (now: number) => {
       frame = requestAnimationFrame(loop);
-      if (now - last < STEP) return;
+      if (now - last < (back ? STEP * 2 : STEP)) return; // the quiet back rows move at half rate
       last = now;
       step();
       draw();
@@ -466,7 +548,7 @@ export function PixelField({ className, reach = 0.32 }: { className?: string; re
       surge = Math.min(3, surge + Math.abs(window.scrollY - lastY) / 90);
       lastY = window.scrollY;
     };
-    if (!reduced) {
+    if (!reduced && !back) {
       target.addEventListener("pointerdown", onDown);
       window.addEventListener("scroll", onScroll, { passive: true });
     }
@@ -503,7 +585,7 @@ export function PixelField({ className, reach = 0.32 }: { className?: string; re
       target.removeEventListener("pointerdown", onDown);
       window.removeEventListener("scroll", onScroll);
     };
-  }, [reach]);
+  }, [reach, back, glow]);
 
   return <canvas ref={canvasRef} aria-hidden="true" className={cn("pointer-events-none block size-full", className)} />;
 }

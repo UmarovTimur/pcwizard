@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { Cross, KeyButton, Noise, Tag } from "../shared/primitives";
 import { Achievement } from "../shared/Achievement";
+import { PixelCity } from "../shared/PixelCity";
 import { Reveal } from "../shared/motion";
 import { contact } from "./content";
 
@@ -17,6 +18,8 @@ export function Contact() {
   return (
     <section id="contact" className="relative flex flex-col items-center overflow-hidden pt-[200px] pb-[120px]">
       <Noise />
+      {/* Drifting pixel rooftops above the heading */}
+      <PixelCity scene="roofs" className="top-0 opacity-70" />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden md:block">
         <span className="absolute inset-y-0 left-[calc(50%-365px)] w-px bg-line" />
         <span className="absolute inset-y-0 left-1/2 w-px bg-line" />
@@ -40,9 +43,11 @@ export function Contact() {
 
 /** The request form, shared by the contact section and the contact popup. */
 /** `framed`: grid crosses for the full-width section; otherwise the submit button sits bottom-right (popup). */
-export function ContactForm({ className, framed = false }: { className?: string; framed?: boolean }) {
+/** `service`: preselected option, ignored unless it is one of the listed services. */
+export function ContactForm({ className, framed = false, service }: { className?: string; framed?: boolean; service?: string }) {
   const [sent, setSent] = useState(false);
   const f = contact.fields;
+  const preset = service && f.service.options.includes(service) ? service : "";
 
   return (
     <form
@@ -74,7 +79,7 @@ export function ContactForm({ className, framed = false }: { className?: string;
       <label className="flex flex-col gap-2.5 border-b border-line pt-5 md:border-r">
         <span className={fieldLabel}>{f.service.label}</span>
         <span className="relative">
-          <select name="service" defaultValue="" className={`${fieldInput} appearance-none pr-10 invalid:text-white/40`} required>
+          <select name="service" defaultValue={preset} className={`${fieldInput} appearance-none pr-10 invalid:text-white/40`} required>
             <option value="" disabled>
               {f.service.placeholder}
             </option>

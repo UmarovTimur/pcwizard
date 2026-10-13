@@ -1,4 +1,5 @@
 import { Cross, KeyButton, Noise, Tag } from "../shared/primitives";
+import { CircuitTraces } from "../shared/CircuitTraces";
 import { Reveal } from "../shared/motion";
 import { BuildCards } from "./BuildCards";
 import { budgets } from "./content";
@@ -9,6 +10,8 @@ export function Budgets() {
   return (
     <section id="budgets" className="relative flex flex-col items-center overflow-hidden pt-[200px]">
       <Noise />
+      {/* Circuit traces with current running along them, above the heading */}
+      <CircuitTraces className="top-0" />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden md:block">
         <span className="absolute inset-y-0 left-[calc(50%-365px)] w-px bg-line" />
         <span className="absolute inset-y-0 left-1/2 w-px bg-line" />

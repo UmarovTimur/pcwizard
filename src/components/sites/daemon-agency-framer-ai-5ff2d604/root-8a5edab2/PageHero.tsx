@@ -44,6 +44,7 @@ export function PageHero({
   lead,
   bullets,
   meta,
+  art,
 }: {
   trail: Crumb[];
   title: string;
@@ -51,6 +52,8 @@ export function PageHero({
   bullets?: string[];
   /** Extra line under the lead (e.g. article date). */
   meta?: React.ReactNode;
+  /** Decoration behind the content (positions itself). */
+  art?: React.ReactNode;
 }) {
   return (
     <section className="relative flex justify-center overflow-hidden pt-[150px] pb-[140px] max-md:pt-32 max-md:pb-[100px]">
@@ -58,6 +61,7 @@ export function PageHero({
       <PixelField className="absolute inset-0 z-[1]" />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(60%_50%_at_50%_100%,rgba(124,58,237,0.25),transparent)]" />
       <Noise className="z-[1]" />
+      {art}
 
       <div className="relative z-[2] flex w-full flex-col gap-8 border-t border-line px-5 pt-[30px] md:w-full md:max-w-[1100px] md:px-[30px]">
         <Cross className="top-0 left-0" />

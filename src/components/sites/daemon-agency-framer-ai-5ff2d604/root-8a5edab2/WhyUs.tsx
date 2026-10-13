@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Cross, Noise, Placeholder, Tag } from "../shared/primitives";
+import { Cross, Noise, Tag } from "../shared/primitives";
 import { Reveal } from "../shared/motion";
 import { whyUs } from "./content";
 
@@ -77,9 +77,9 @@ export function WhyUs() {
       </div>
 
       <div className="relative z-[2] mt-12 min-h-[520px] w-full overflow-hidden md:mt-0 md:min-h-[788px] md:w-1/2">
-        <Placeholder label="Фото 720×788" tone="mid" className="absolute inset-0" />
-        <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(68%_150%_at_6%_87%,rgb(124,58,237)_0%,rgb(147,51,234)_45%,rgb(217,70,239)_80%)] opacity-90 mix-blend-screen" />
-        <Noise className="opacity-[0.43]" />
+        {/* Pixel-art sky: deep violet in the corner behind the words, glowing pink from the
+            bottom right, with dithered steps between the shades and a few stars */}
+        <div aria-hidden="true" className="absolute inset-0 bg-[url(/images/whyus-pixel-sky.png)] bg-cover bg-center [image-rendering:pixelated]" />
         <p aria-hidden="true" className="relative p-[30px] font-display text-[clamp(64px,8.2vw,124px)] leading-[0.95] text-white uppercase">
           {whyUs.bigWord.map((w) => (
             <span key={w} className="block">

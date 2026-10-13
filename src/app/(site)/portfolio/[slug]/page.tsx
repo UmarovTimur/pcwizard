@@ -110,7 +110,7 @@ export default async function BuildPage({ params }: Props) {
             },
           ]}
         />
-        <div className="mt-8">
+        <div className="mt-8" data-service={onSale ? undefined : "Сборка ПК на заказ"}>
           <KeyButton href="#contact" tone="accent">
             {onSale ? "Купить эту сборку" : "Хочу похожую"}
           </KeyButton>

@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
-import { Caveat, Coda, IBM_Plex_Mono, Inria_Sans, Inter, Onest, Press_Start_2P, Science_Gothic } from "next/font/google";
+import { Caveat, Coda, IBM_Plex_Mono, Inria_Sans, Inter, Press_Start_2P, Science_Gothic } from "next/font/google";
 import { localBusinessLd, site } from "@/lib/site";
 import { ContactModal } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/root-8a5edab2/ContactModal";
 import { JsonLd } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/shared/JsonLd";
 import "./globals.css";
 
-// Headlines (hero and section headings): Science Gothic — a variable "hardware" grotesque (Bank Gothic lineage) with Cyrillic;
+// Headlines and body text: Science Gothic — a variable "hardware" grotesque (Bank Gothic lineage) with Cyrillic;
 // the width axis lets the headline run condensed on phones and full width on desktop.
 const scienceGothic = Science_Gothic({ variable: "--font-science", subsets: ["latin", "cyrillic"], axes: ["wdth"] });
-// Body text: Onest — a sans designed for Cyrillic UI text, clear at small sizes.
-const onest = Onest({ variable: "--font-onest", subsets: ["latin", "cyrillic"], weight: ["300", "400", "500"] });
 const plexMono = IBM_Plex_Mono({ variable: "--font-plex-mono", subsets: ["latin", "cyrillic"], weight: "400" });
 // Pixel face for short labels, buttons and marquees (as on the promo banner).
 const pressStart = Press_Start_2P({ variable: "--font-press-start", subsets: ["latin", "cyrillic"], weight: "400" });
@@ -47,7 +45,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const fonts = [scienceGothic, onest, plexMono, pressStart, caveat, coda, inriaSans, inter].map((f) => f.variable).join(" ");
+  const fonts = [scienceGothic, plexMono, pressStart, caveat, coda, inriaSans, inter].map((f) => f.variable).join(" ");
   return (
     <html lang="ru" className={`${fonts} antialiased`}>
       <head>
