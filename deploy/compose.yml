@@ -1,0 +1,52 @@
+# The site as it runs on the VPS: /home/ubuntu/srv/pcwizard/compose.yml, next to .env (secrets),
+# media/ (product photos) and the database volume. The image is built on a work machine and
+# loaded into the server's docker by deploy/deploy.sh; nothing is built on the server.
+name: pcwizard
+
+services:
+  app:
+    image: pcwizard:latest
+    container_name: pcwizard-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    # Only nginx on the host talks to it
+    ports:
+      - "127.0.0.1:3005:3000"
+    # .env: POSTGRES_PASSWORD, PAYLOAD_SECRET, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: 1
+      DATABASE_URL: postgresql://pcwizard:${POSTGRES_PASSWORD}@db:5432/pcwizard
+    volumes:
+      - ./media:/app/media
+    mem_limit: 768m
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # The catalog's own Postgres, reachable only from the app container
+  db:
+    image: postgres:16-alpine
+    container_name: pcwizard-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pcwizard
+      POSTGRES_DB: pcwizard
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    mem_limit: 256m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pcwizard -d pcwizard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:

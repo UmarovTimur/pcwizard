@@ -48,6 +48,11 @@ COPY . .
 
 ENV NODE_ENV=production
 
+# Public address of the site. Next.js bakes NEXT_PUBLIC_* values into the build, so it has to be
+# known here: docker build --build-arg NEXT_PUBLIC_SITE_URL=https://example.uz
+ARG NEXT_PUBLIC_SITE_URL=https://pcwizard.uz
+ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.

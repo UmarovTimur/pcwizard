@@ -43,6 +43,10 @@ scripts
 Dockerfile
 docker-compose.yml
 .dockerignore
+deploy
+
+# Uploaded product photos (mounted as a volume at runtime)
+media
 
 # Misc
 *.tsbuildinfo
