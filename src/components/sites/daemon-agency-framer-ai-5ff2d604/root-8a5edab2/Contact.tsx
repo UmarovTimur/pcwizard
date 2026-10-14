@@ -3,80 +3,104 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
-import { Cross, KeyButton, Noise, Tag } from "../shared/primitives";
+import { KeyButton, Noise, SectionHead, ShardBullet } from "../shared/primitives";
 import { Achievement } from "../shared/Achievement";
 import { PixelCity } from "../shared/PixelCity";
-import { Reveal } from "../shared/motion";
-import { contact } from "./content";
+import { site } from "@/lib/site";
+import { sendLead } from "@/lib/lead";
+import { cleanLead, leadText, type Lead } from "@/lib/lead-text";
+import { contact, footer, hero } from "./content";
 
-const fieldLabel = "px-2.5 font-mono text-[15px] leading-[22.5px] tracking-[-0.03em] text-muted";
-const fieldInput =
-  "w-full bg-transparent py-3 pr-2.5 pl-2.5 text-base font-light tracking-[0.02em] text-white placeholder:text-white/40 focus:outline-none";
+const fieldLabel = "px-5 font-mono text-[15px] leading-[22.5px] tracking-[-0.03em] text-muted";
+const fieldInput = "w-full bg-transparent px-5 py-3 text-[18px] text-white placeholder:text-white/40 focus:outline-none";
+// The field itself has no outline: its whole cell shows the focus instead
+const fieldCell = "flex flex-col gap-2.5 border-line pt-5 transition-[background-color,box-shadow] focus-within:bg-white/[0.04] focus-within:shadow-[inset_0_-2px_0_var(--color-violet)]";
+/** Pixel-font link with a violet underline (Telegram, Instagram). */
+export const socialLink =
+  "font-pixel text-[13px] leading-[21.5px] uppercase underline decoration-violet decoration-2 underline-offset-[7px] hover:text-lavender hover:decoration-lavender";
 
+/** The closing section: the ask on top, then the request form with the direct contacts and the key promises beside it. */
 export function Contact() {
-
   return (
-    <section id="contact" className="relative flex flex-col items-center overflow-hidden pt-[200px] pb-[120px]">
+    <section id="contact" className="relative overflow-hidden border-t border-line pt-[270px] pb-[clamp(72px,8vw,128px)]">
       <Noise />
       {/* Drifting pixel rooftops above the heading */}
-      <PixelCity scene="roofs" className="top-0 opacity-70" />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden md:block">
-        <span className="absolute inset-y-0 left-[calc(50%-365px)] w-px bg-line" />
-        <span className="absolute inset-y-0 left-1/2 w-px bg-line" />
-        <span className="absolute inset-y-0 left-[calc(50%+365px)] w-px bg-line" />
-      </div>
+      <PixelCity className="top-0 opacity-70" />
 
-      <div className="relative z-[2] flex w-full flex-col gap-5 border-t border-line px-5 pt-[30px] pb-[50px] md:w-full md:max-w-[1100px] md:px-[30px]">
-        <Cross className="top-0 left-0" />
-        <Cross className="top-0 left-full" />
-        <Tag>{contact.tag}</Tag>
-                <Reveal as="h2" className="max-w-[900px] font-display text-[34px] leading-[1.05] uppercase md:text-[52px] lg:text-[64px]">
-          {contact.heading}
-        </Reveal>
-        <p className="max-w-[420px] text-[17px] leading-[27px] font-light tracking-[0.02em]">{contact.lead}</p>
-      </div>
+      <div className="wrap relative z-[2]">
+        <SectionHead stacked title={contact.heading} lead={contact.lead} />
 
-      <ContactForm framed className="relative z-[2] w-full border-y border-line bg-ink md:w-full md:max-w-[1100px]" />
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,4fr)] lg:gap-5">
+          <ContactForm className="border border-line bg-panel" />
+
+          {/* Contacts: phone, Telegram, Instagram only */}
+          <aside className="flex flex-col gap-5 border border-line bg-panel p-6 md:p-8">
+            <p className="font-mono text-[15px] text-muted">{contact.direct}</p>
+            <a href={`tel:${footer.phone.replace(/\s/g, "")}`} className="w-fit font-display text-[28px] leading-[1.1] whitespace-nowrap hover:text-lavender sm:text-[32px] lg:text-[26px] xl:text-[32px]">
+              {footer.phone}
+            </a>
+            <ul className="flex flex-wrap gap-x-6 gap-y-3">
+              {footer.socials.map((s) => (
+                <li key={s.label}>
+                  <a href={s.href} target="_blank" rel="noopener noreferrer" className={socialLink}>
+                    {s.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <ul className="mt-auto flex flex-col gap-3.5 border-t border-line pt-6">
+              {hero.trust.map((t) => (
+                <li key={t} className="flex items-start gap-3 font-pixel text-[12px] leading-[22px] uppercase [word-spacing:-0.3em]">
+                  <ShardBullet className="mt-[3px] h-[15px]" />
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </aside>
+        </div>
+      </div>
     </section>
   );
 }
 
-/** The request form, shared by the contact section and the contact popup. */
-/** `framed`: grid crosses for the full-width section; otherwise the submit button sits bottom-right (popup). */
-/** `service`: preselected option, ignored unless it is one of the listed services. */
-export function ContactForm({ className, framed = false, service }: { className?: string; framed?: boolean; service?: string }) {
-  const [sent, setSent] = useState(false);
+/**
+ * The request form, shared by the contact section and the contact popup.
+ * `service`: preselected option, ignored unless it is one of the listed services.
+ */
+export function ContactForm({ className, service }: { className?: string; service?: string }) {
+  // idle → sending → sent, or "fallback" with the request text when it could not be delivered from the site
+  const [state, setState] = useState<{ step: "idle" | "sending" | "sent" } | { step: "fallback"; lead: Lead }>({ step: "idle" });
   const f = contact.fields;
   const preset = service && f.service.options.includes(service) ? service : "";
 
-  return (
-    <form
-      className={cn("grid md:grid-cols-2", className)}
-      onSubmit={(e) => {
-        e.preventDefault();
-        setSent(true);
-      }}
-    >
-      {framed && (
-        <>
-          <Cross className="top-0 left-0" />
-          <Cross className="top-0 left-1/2" />
-          <Cross className="top-0 left-full" />
-          <Cross className="top-full left-0" />
-          <Cross className="top-full left-1/2" />
-          <Cross className="top-full left-full" />
-        </>
-      )}
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const field = (name: string) => String(data.get(name) ?? "");
+    const lead = cleanLead({
+      name: field("name"),
+      phone: field("phone"),
+      service: field("service"),
+      budget: field("budget"),
+      message: field("message"),
+      page: window.location.pathname,
+    });
+    setState({ step: "sending" });
+    const ok = await sendLead(lead).catch(() => false);
+    setState(ok ? { step: "sent" } : { step: "fallback", lead });
+  };
 
-      <label className="flex flex-col gap-2.5 border-b border-line pt-5 md:border-r">
+  return (
+    <form className={cn("grid md:grid-cols-2", className)} onSubmit={onSubmit}>
+      <label className={cn(fieldCell, "border-b md:border-r")}>
         <span className={fieldLabel}>{f.name.label}</span>
         <input name="name" required autoComplete="name" placeholder={f.name.placeholder} className={fieldInput} />
       </label>
-      <label className="flex flex-col gap-2.5 border-b border-line pt-5">
+      <label className={cn(fieldCell, "border-b")}>
         <span className={fieldLabel}>{f.phone.label}</span>
-        <input name="phone" type="tel" required autoComplete="tel" placeholder={f.phone.placeholder} className={fieldInput} />
+        <input name="phone" type="tel" inputMode="tel" required autoComplete="tel" placeholder={f.phone.placeholder} className={fieldInput} />
       </label>
-      <label className="flex flex-col gap-2.5 border-b border-line pt-5 md:border-r">
+      <label className={cn(fieldCell, "border-b md:border-r")}>
         <span className={fieldLabel}>{f.service.label}</span>
         <span className="relative">
           <select name="service" defaultValue={preset} className={`${fieldInput} appearance-none pr-10 invalid:text-white/40`} required>
@@ -92,22 +116,39 @@ export function ContactForm({ className, framed = false, service }: { className?
           <ChevronDown aria-hidden="true" className="pointer-events-none absolute top-1/2 right-5 size-4 -translate-y-1/2 text-white/50" strokeWidth={1.25} />
         </span>
       </label>
-      <label className="flex flex-col gap-2.5 border-b border-line pt-5">
+      <label className={cn(fieldCell, "border-b")}>
         <span className={fieldLabel}>{f.budget.label}</span>
         <input name="budget" placeholder={f.budget.placeholder} className={fieldInput} />
       </label>
-      <label className="flex flex-col gap-2.5 pt-5 md:border-r md:border-line">
+      <label className={cn(fieldCell, "md:border-r")}>
         <span className={fieldLabel}>{f.message.label}</span>
         <textarea name="message" rows={4} placeholder={f.message.placeholder} className={`${fieldInput} min-h-[100px] resize-y`} />
       </label>
-      <div className={cn("flex items-start p-5", framed ? "md:p-0" : "md:items-end md:justify-end md:p-[30px]")}>
-        {sent ? (
+      <div className="flex flex-col items-start gap-4 p-5 md:justify-end md:p-[30px]" aria-live="polite">
+        {state.step === "sent" && (
           <>
-            <p className="p-2.5 font-mono text-[15px] leading-[24px] text-muted uppercase">{contact.sent}</p>
+            <p className="font-mono text-[15px] leading-[24px] text-muted uppercase">{contact.sent}</p>
             <Achievement title={contact.achievement.title} text={contact.achievement.text} />
           </>
-        ) : (
-          <KeyButton>{contact.submit}</KeyButton>
+        )}
+        {state.step === "fallback" && (
+          <>
+            <p className="text-[17px] leading-[1.5] text-white/85">{contact.fallback.text}</p>
+            <KeyButton href={`${site.telegram}?text=${encodeURIComponent(leadText(state.lead))}`} tone="accent" external>
+              {contact.fallback.label}
+            </KeyButton>
+            <p className="font-mono text-[15px] text-muted">
+              {contact.fallback.call}{" "}
+              <a href={`tel:${footer.phone.replace(/\s/g, "")}`} className="text-white underline decoration-white/50 underline-offset-[6px] hover:text-lavender">
+                {footer.phone}
+              </a>
+            </p>
+          </>
+        )}
+        {(state.step === "idle" || state.step === "sending") && (
+          <KeyButton disabled={state.step === "sending"} className="md:self-end">
+            {state.step === "sending" ? contact.sending : contact.submit}
+          </KeyButton>
         )}
       </div>
     </form>

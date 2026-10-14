@@ -11,7 +11,7 @@ export function PhotoGrid({ title, photos }: { title: string; photos: string[] }
 
   return (
     <>
-      <ul className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
+      <ul className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3 xl:grid-cols-6">
         {photos.map((src, i) => (
           <li key={src} className={cn("relative aspect-[3/4]", i === 0 && "col-span-2 row-span-2 md:aspect-auto")}>
             <button
@@ -25,7 +25,7 @@ export function PhotoGrid({ title, photos }: { title: string; photos: string[] }
                 alt={`${title} — фото ${i + 1}`}
                 fill
                 priority={i === 0}
-                sizes={i === 0 ? "(min-width: 768px) 550px, 100vw" : "(min-width: 768px) 275px, 50vw"}
+                sizes={i === 0 ? "(min-width: 1280px) 36vw, (min-width: 768px) 50vw, 100vw" : "(min-width: 1280px) 18vw, (min-width: 768px) 25vw, 50vw"}
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </button>

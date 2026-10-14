@@ -7,7 +7,7 @@ import { Column, InnerShell, RelatedLinks } from "@/components/sites/daemon-agen
 import { getLanding, landings } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/root-8a5edab2/landings";
 import { PageHero } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/root-8a5edab2/PageHero";
 import { JsonLd } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/shared/JsonLd";
-import { FaqList, Prose } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/shared/Prose";
+import { FaqList, innerHeading, Prose } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/shared/Prose";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -78,7 +78,7 @@ export default async function LandingPage({ params }: Props) {
       )}
       <Column className="pt-[120px]">
         <div className="flex flex-col gap-6">
-          <h2 className="font-display text-[32px] leading-[36px] tracking-[-0.02em] uppercase md:text-[40px] md:leading-[44px]">Частые вопросы</h2>
+          <h2 className={innerHeading}>Частые вопросы</h2>
           <FaqList items={landing.faq} />
         </div>
       </Column>

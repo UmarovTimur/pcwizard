@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { absoluteUrl, site } from "@/lib/site";
-import { Cross } from "../shared/primitives";
 import { JsonLd } from "../shared/JsonLd";
 import { builds, formatMln } from "./builds";
 
@@ -26,35 +25,35 @@ function buildsLd() {
   }));
 }
 
-/** Four budget tiers (7 / 10 / 15 / 25 млн сум), each linking to its article. */
+/** Four budget tiers (7 / 10 / 15 / 25 млн сум): what each one runs and its key parts; a card links to its article. */
 export function BuildCards() {
   return (
     <>
       <JsonLd data={buildsLd()} />
-      <ul className="relative grid border-y border-line md:grid-cols-4">
-        <Cross className="top-0 left-0" />
-        <Cross className="top-0 left-full" />
-        <Cross className="top-full left-0" />
-        <Cross className="top-full left-full" />
+      <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-5">
         {builds.map((b) => (
-          <li key={b.slug} className="border-line max-md:border-b max-md:last:border-b-0 md:border-l md:first:border-l-0">
-            <Link href={`/blog/${b.slug}`} className="group flex h-full flex-col gap-5 bg-ink p-[26px] transition-colors hover:bg-white/[0.03]">
-              <h3 className="flex flex-col gap-1">
-                <span className="neon-fill w-fit font-pixel text-[26px] leading-[34px]" data-text={b.budget}>{b.budget}</span>
-                <span className="font-pixel text-[11px] leading-[22px] text-muted uppercase">млн сум</span>
+          <li key={b.slug}>
+            <Link href={`/blog/${b.slug}`} className="group flex h-full flex-col border border-line bg-panel p-6 transition-colors hover:border-violet/60 md:p-7">
+              <h3 className="flex items-baseline gap-3">
+                <span className="neon-fill font-pixel text-[38px] leading-[1.3] md:text-[44px]" data-text={b.budget}>
+                  {b.budget}
+                </span>
+                <span className="font-pixel text-[12px] leading-[22px] text-muted uppercase">млн сум</span>
               </h3>
-              <p className="font-mono text-[15px] leading-[23px] uppercase">{b.target}</p>
-              <dl className="flex flex-col gap-2 text-[15px] leading-[22px] font-light">
-                {b.parts.slice(0, 2).map((p) => (
-                  <div key={p.part}>
-                    <dt className="text-muted">{p.part}</dt>
-                    <dd>{p.pick}</dd>
+              <p className="mt-4 font-display text-[22px] leading-[1.15] uppercase">{b.target}</p>
+              <p className="mt-2.5 mb-6 text-[16px] leading-[1.5] text-white/70">{b.games}</p>
+              {/* Pinned to the bottom, so the part rows line up across the four cards */}
+              <dl className="mt-auto flex flex-col border-t border-line">
+                {b.parts.slice(0, 4).map((p) => (
+                  <div key={p.part} className="border-b border-line py-2.5">
+                    <dt className="font-mono text-[13px] leading-[20px] text-muted">{p.part}</dt>
+                    <dd className="text-[16px] leading-[1.4]">{p.pick}</dd>
                   </div>
                 ))}
               </dl>
-              <span className="mt-auto flex items-center gap-2 font-pixel text-[11px] leading-[22px] uppercase">
+              <span className="mt-7 flex items-center gap-2 font-pixel text-[12px] leading-[22px] uppercase transition-colors group-hover:text-lavender">
                 Вся сборка
-                <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={1.25} aria-hidden="true" />
+                <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={1.5} aria-hidden="true" />
               </span>
             </Link>
           </li>

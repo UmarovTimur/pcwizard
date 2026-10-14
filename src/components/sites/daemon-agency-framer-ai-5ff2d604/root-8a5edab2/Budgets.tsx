@@ -1,44 +1,42 @@
-import { Cross, KeyButton, Noise, Tag } from "../shared/primitives";
-import { CircuitTraces } from "../shared/CircuitTraces";
-import { Reveal } from "../shared/motion";
+import { BigMarquee } from "../shared/BigMarquee";
+import { KeyButton, Section, SectionHead } from "../shared/primitives";
 import { BuildCards } from "./BuildCards";
-import { budgets } from "./content";
+import { budgets, hero } from "./content";
 
-/** Home: typical gaming builds by budget, linking to the long-form articles. */
+/**
+ * Home, right under the first screen: the price claim as a marquee, then typical gaming builds
+ * by budget, each linking to its long-form article.
+ */
 export function Budgets() {
   const [lead, figures] = budgets.heading.split(": ");
   return (
-    <section id="budgets" className="relative flex flex-col items-center overflow-hidden pt-[200px]">
-      <Noise />
-      {/* Circuit traces with current running along them, above the heading */}
-      <CircuitTraces className="top-0" />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden md:block">
-        <span className="absolute inset-y-0 left-[calc(50%-365px)] w-px bg-line" />
-        <span className="absolute inset-y-0 left-1/2 w-px bg-line" />
-        <span className="absolute inset-y-0 left-[calc(50%+365px)] w-px bg-line" />
-      </div>
-
-      <div className="relative z-[2] grid w-full gap-8 border-t border-line px-5 pt-[30px] pb-[50px] md:w-full md:max-w-[1100px] md:grid-cols-2 md:items-end md:px-[30px]">
-        <Cross className="top-0 left-0" />
-        <Cross className="top-0 left-full" />
-        <div className="flex flex-col gap-5">
-          <Tag>{budgets.tag}</Tag>
-          <Reveal as="h2" className="font-display text-[34px] leading-[1.05] uppercase md:text-[30px] lg:text-[36px]">
-            {/* The budget figures stay on one line on wide screens instead of breaking between slashes */}
-            {lead}: <span className="xl:whitespace-nowrap">{figures}</span>
-          </Reveal>
-        </div>
-        <div className="flex flex-col items-start gap-5 md:pl-[60px]">
-          <p className="max-w-[340px] text-[17px] leading-[27px] font-light tracking-[0.02em]">{budgets.lead}</p>
-          <KeyButton href={budgets.cta.href} tone="black">
-            {budgets.cta.label}
-          </KeyButton>
-        </div>
-      </div>
-
-      <div className="relative z-[2] w-full px-5 md:w-full md:max-w-[1100px] md:px-0">
+    <Section id="budgets" className="border-t-0 pt-[60px]">
+      <BigMarquee text={budgets.marquee} duration={30} size="md" />
+      <div className="wrap relative mt-14 md:mt-20">
+        <SectionHead
+          tag={budgets.tag}
+          lead={budgets.lead}
+          title={
+            <>
+              {lead}
+              <span className="sr-only">: </span>
+              {/* The figures repeat as the big numbers on the cards, so here they run as a quieter second line */}
+              <span className="mt-2 block text-[0.5em] leading-[1.2]">{figures}</span>
+            </>
+          }
+        >
+          {/* The order button right where the prices are; it opens the request form with the service chosen */}
+          <div className="flex flex-wrap gap-3" data-service="Сборка ПК на заказ">
+            <KeyButton href={hero.cta.href} tone="accent">
+              {hero.cta.label}
+            </KeyButton>
+            <KeyButton href={budgets.cta.href} tone="black">
+              {budgets.cta.label}
+            </KeyButton>
+          </div>
+        </SectionHead>
         <BuildCards />
       </div>
-    </section>
+    </Section>
   );
 }

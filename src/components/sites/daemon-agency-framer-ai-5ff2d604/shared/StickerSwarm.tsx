@@ -6,19 +6,22 @@ import { cn } from "@/lib/utils";
 // public/images/stickers/<name>.png
 const NAMES = ["chair", "crate", "csgo", "gamepad", "gg", "grenade", "headset", "headshot", "knife", "monitor", "mousepad", "pc"];
 
-const SPRITE = 112; // size the sticker sprites are baked at (the largest drawn), px
+const SIZE = [112, 150]; // a sticker's side, px
+const SIZE_MIN = 84; // ...and the least it shrinks to where the space beside the content is narrow
+const SPRITE = SIZE[1]; // size the sticker sprites are baked at (the largest drawn), px
 const PAD = 24; // room around a baked sprite for its drop shadow, px
 const G = 5; // the glow is drawn at 1/G scale and blown up unsmoothed, so it comes out in blocks
 const PX = 3; // one sparkle pixel, px
 
-const SPAWN_MS = 340; // at most one new sticker per this while the cursor moves
-const SPAWN_DIST = 48; // ...and only after the cursor has travelled this far, px
-const MAX = 10; // stickers on screen; past this the oldest pops
+const SPAWN_MS = 190; // at most one new sticker per this while the cursor moves
+const SPAWN_DIST = 30; // ...and only after the cursor has travelled this far, px
+const MAX = 12; // stickers on screen; past this the oldest pops
 const GAP = 16; // clearance kept around the content, px
 const HEADER = 80; // the fixed header bar at the top of the viewport, px
-const LIFE = [9, 13]; // seconds a sticker floats before it pops
-const IN_MS = 450;
-const OUT_MS = 450;
+const LIFE = [2.2, 3.4]; // seconds a sticker floats before it pops
+const IN_MS = 900; // the springy pop-in, wobble included
+const FADE_MS = 120; // ...of which this long to become opaque
+const OUT_MS = 260;
 
 const SPRING = 22; // pull out of the content and off the edges, 1/s²
 const DRAG = 1.4; // velocity damping in open space, 1/s
@@ -66,7 +69,8 @@ interface Box {
 
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
-const easeOutBack = (p: number) => 1 + 2.4 * (p - 1) ** 3 + 1.4 * (p - 1) ** 2;
+// A released spring: shoots past 1 by about a quarter, then wobbles around it and settles.
+const easeOutElastic = (p: number) => (p >= 1 ? 1 : 1 - Math.exp(-6.5 * p) * Math.cos(p * Math.PI * 5));
 
 function bake(img: HTMLImageElement, dpr: number): Art {
   const full = SPRITE + PAD * 2;
@@ -144,7 +148,7 @@ export function StickerSwarm({ avoid, className }: { avoid: RefObject<HTMLElemen
         const img = new Image();
         img.decoding = "async";
         img.onload = () => arts.push(bake(img, dpr));
-        img.src = `/_next/image?url=${encodeURIComponent(`/images/stickers/${name}.png`)}&w=256&q=75`;
+        img.src = `/_next/image?url=${encodeURIComponent(`/images/stickers/${name}.png`)}&w=384&q=75`;
       }
     };
 
@@ -202,7 +206,10 @@ export function StickerSwarm({ avoid, className }: { avoid: RefObject<HTMLElemen
       }
       const a = rand(0, Math.PI * 2);
       const sp = rand(50, 130);
-      const size = rand(76, 104);
+      // No bigger than the free strip beside the content, so it does not sit on the questions
+      const room = box ? Math.max(box.l, W - box.r) : W;
+      const big = clamp(room, SIZE_MIN, SIZE[1]);
+      const size = rand((big * SIZE[0]) / SIZE[1], big);
       stickers.push({
         art,
         x: x + rand(-10, 10),
@@ -365,15 +372,15 @@ export function StickerSwarm({ avoid, className }: { avoid: RefObject<HTMLElemen
       // Where each sticker is drawn this frame
       const poses = stickers.map((s) => {
         const p = clamp((now - s.born) / IN_MS, 0, 1);
-        const k = easeOutBack(p);
+        const k = easeOutElastic(p);
         const q = s.leaving === null ? 0 : clamp((now - s.leaving) / OUT_MS, 0, 1);
         const settle = clamp((now - s.born) / 1200, 0, 1);
         return {
           s,
           y: s.y + Math.sin(t * 1.6 + s.phase) * 5 * settle,
           rot: ((s.tilt - 18 * (1 - k) + 10 * q + Math.sin(t * 1.1 + s.phase) * 3 * settle) * Math.PI) / 180,
-          scale: (1.6 - 0.6 * k) * (1 - 0.4 * q) * (s.size / SPRITE),
-          alpha: Math.min(1, p * 2.5) * (1 - q),
+          scale: (0.25 + 0.75 * k) * (1 - 0.4 * q) * (s.size / SPRITE),
+          alpha: clamp((now - s.born) / FADE_MS, 0, 1) * (1 - q),
           flash: 1 + Math.max(0, 1 - (now - s.born) / 400) * 1.2,
         };
       });

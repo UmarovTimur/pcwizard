@@ -22,10 +22,13 @@ function Inline({ text }: { text: string }) {
   return <>{parts}</>;
 }
 
-const text = "text-lg leading-7 font-light tracking-[0.01em] text-white/85";
+const text = "text-[19px] leading-[1.65] text-white/85";
+
+/** Section heading inside an inner page: the same metal look as the home headings, one size down. */
+export const innerHeading = "metal-text font-display text-[clamp(28px,3.2vw,44px)] leading-[1.05] text-balance uppercase";
 
 function Bullet() {
-  return <span aria-hidden="true" className="mt-[11px] size-[5px] shrink-0 bg-violet shadow-[0_0_8px_rgba(168,85,247,0.8)]" />;
+  return <span aria-hidden="true" className="mt-[13px] size-[6px] shrink-0 bg-violet shadow-[0_0_8px_rgba(168,85,247,0.8)]" />;
 }
 
 /** Long-form text for landing pages and articles. */
@@ -36,7 +39,7 @@ export function Prose({ blocks, className }: { blocks: Block[]; className?: stri
         switch (b.type) {
           case "h2":
             return (
-              <h2 key={i} className="mt-8 font-display text-[32px] leading-[36px] tracking-[-0.02em] uppercase first:mt-0 md:text-[40px] md:leading-[44px]">
+              <h2 key={i} className={cn(innerHeading, "mt-10 first:mt-0")}>
                 {b.text}
               </h2>
             );
@@ -83,7 +86,7 @@ export function Prose({ blocks, className }: { blocks: Block[]; className?: stri
           case "table":
             return (
               <div key={i} className="-mx-5 overflow-x-auto px-5 md:mx-0 md:px-0">
-                <table className="w-full min-w-[480px] border-collapse border border-line text-left text-base leading-[25px] font-light">
+                <table className="w-full min-w-[480px] border-collapse border border-line bg-panel text-left text-[17px] leading-[1.5]">
                   <thead>
                     <tr className="bg-white/[0.04]">
                       {b.head.map((h, c) => (
@@ -130,17 +133,17 @@ export function Prose({ blocks, className }: { blocks: Block[]; className?: stri
 /** Static FAQ list (native <details>), paired with FAQPage JSON-LD on the page. */
 export function FaqList({ items }: { items: FaqItem[] }) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2.5">
       {items.map((item) => (
-        <details key={item.q} className="group bg-white/[0.02] open:bg-white/[0.04]">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-5 pr-3 pl-[22px] transition-colors hover:bg-white/[0.05] [&::-webkit-details-marker]:hidden">
-            <h3 className="font-mono text-[15px] leading-[24px] uppercase">{item.q}</h3>
+        <details key={item.q} className="group border border-line bg-panel transition-colors hover:border-violet/40 open:border-violet/40">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-6 px-5 py-5 md:px-7 [&::-webkit-details-marker]:hidden">
+            <h3 className="text-[19px] leading-[1.35] font-medium md:text-[21px]">{item.q}</h3>
             <span aria-hidden="true" className="relative size-6 shrink-0 transition-transform duration-300 group-open:rotate-45">
-              <span className="absolute top-1/2 left-1/2 h-px w-3.5 -translate-x-1/2 bg-white" />
-              <span className="absolute top-1/2 left-1/2 h-3.5 w-px -translate-y-1/2 bg-white" />
+              <span className="absolute top-1/2 left-1/2 h-0.5 w-4 -translate-x-1/2 -translate-y-1/2 bg-violet" />
+              <span className="absolute top-1/2 left-1/2 h-4 w-0.5 -translate-x-1/2 -translate-y-1/2 bg-violet" />
             </span>
           </summary>
-          <p className="px-[22px] pb-5 text-base leading-[25.5px] font-light tracking-[0.02em] text-muted">{item.a}</p>
+          <p className="px-5 pb-6 text-[18px] leading-[1.6] text-white/75 md:px-7">{item.a}</p>
         </details>
       ))}
     </div>

@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { Caveat, Coda, IBM_Plex_Mono, Inria_Sans, Inter, Press_Start_2P, Science_Gothic } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Coda, IBM_Plex_Mono, Inria_Sans, Inter, Press_Start_2P, Science_Gothic } from "next/font/google";
 import { localBusinessLd, site } from "@/lib/site";
 import { ContactModal } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/root-8a5edab2/ContactModal";
 import { JsonLd } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/shared/JsonLd";
@@ -11,7 +11,6 @@ const scienceGothic = Science_Gothic({ variable: "--font-science", subsets: ["la
 const plexMono = IBM_Plex_Mono({ variable: "--font-plex-mono", subsets: ["latin", "cyrillic"], weight: "400" });
 // Pixel face for short labels, buttons and marquees (as on the promo banner).
 const pressStart = Press_Start_2P({ variable: "--font-press-start", subsets: ["latin", "cyrillic"], weight: "400" });
-const caveat = Caveat({ variable: "--font-caveat", subsets: ["latin", "cyrillic"], weight: "400" });
 // Latin-only faces used for the "PcWizard_uz" wordmark.
 const coda = Coda({ variable: "--font-coda", subsets: ["latin"], weight: "800" });
 const inriaSans = Inria_Sans({ variable: "--font-inria", subsets: ["latin"], weight: "700" });
@@ -40,12 +39,15 @@ export const metadata: Metadata = {
   twitter: { card: "summary" },
 };
 
+// Dark browser chrome (address bar, scrollbars, native controls) to match the page
+export const viewport: Viewport = { themeColor: "#0b0614", colorScheme: "dark" };
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const fonts = [scienceGothic, plexMono, pressStart, caveat, coda, inriaSans, inter].map((f) => f.variable).join(" ");
+  const fonts = [scienceGothic, plexMono, pressStart, coda, inriaSans, inter].map((f) => f.variable).join(" ");
   return (
     <html lang="ru" className={`${fonts} antialiased`}>
       <head>
@@ -53,6 +55,10 @@ export default function RootLayout({
       </head>
       <body>
         <JsonLd data={localBusinessLd()} />
+        {/* Keyboard users can jump past the header straight to the page */}
+        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:bg-white focus:px-4 focus:py-2 focus:text-ink">
+          К содержимому
+        </a>
         {children}
         {/* Opens for every "#contact" link instead of scrolling to the form */}
         <ContactModal />

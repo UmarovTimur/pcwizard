@@ -172,7 +172,7 @@ export function ContactModal() {
           <PixelCurtain open={open} cell={24} duration={OPEN_MS} />
           <div
             className={cn(
-              "relative max-h-[calc(100dvh-32px)] overflow-y-auto border border-line shadow-[0_0_60px_rgba(124,58,237,0.4)] transition-opacity",
+              "relative max-h-[calc(100dvh-32px)] overflow-y-auto overscroll-contain border border-line shadow-[0_0_60px_rgba(124,58,237,0.4)] transition-opacity",
               open ? "opacity-100 duration-200" : "opacity-0 duration-100",
             )}
             style={{ transitionDelay: open ? `${OPEN_MS * 0.6}ms` : "0ms" }}

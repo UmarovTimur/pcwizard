@@ -3,14 +3,15 @@
 import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Cross, KeyButton, Noise, Tag } from "../shared/primitives";
-import { Reveal } from "../shared/motion";
+import { KeyButton, Section, SectionHead } from "../shared/primitives";
 import { BuildCard } from "./BuildCard";
 import { works } from "./content";
 
+const arrow = "flex size-12 items-center justify-center border border-line bg-panel transition-colors hover:border-violet/60 hover:text-lavender";
+
 /**
- * Portfolio carousel of real builds: arrows move the track one card at a time (550px; full width
- * on mobile), and it can be dragged with a finger or the mouse; a card links to its build page.
+ * Portfolio carousel of real builds: arrows move the track one card at a time, and it can be
+ * dragged with a finger or the mouse; a card links to its build page.
  */
 export function Works() {
   const [index, setIndex] = useState(0);
@@ -66,42 +67,24 @@ export function Works() {
   const loop = [...works.projects, ...works.projects, ...works.projects];
 
   return (
-    <section id="works" className="relative flex flex-col items-center overflow-hidden pt-[200px]">
-      <Noise />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden md:block">
-        <span className="absolute inset-y-0 left-[calc(50%-365px)] w-px bg-line" />
-        <span className="absolute inset-y-0 left-1/2 w-px bg-line" />
-        <span className="absolute inset-y-0 left-[calc(50%+365px)] w-px bg-line" />
-      </div>
-
-      <div className="relative z-[2] grid w-full border-t border-line px-5 md:w-full md:max-w-[1100px] md:grid-cols-2 md:px-0">
-        <Cross className="top-0 left-0" />
-        <Cross className="top-0 left-1/2" />
-        <Cross className="top-0 left-full" />
-        <div className="relative flex flex-col gap-5 bg-ink pt-[30px] pr-10 pb-[70px] pl-[30px] max-md:px-0">
-          <Tag>{works.tag}</Tag>
-          <Reveal as="h2" className="max-w-[480px] font-display text-[46px] leading-[1] uppercase md:text-[60px] lg:text-[76px]">
-            {works.heading}
-          </Reveal>
-          <Noise />
-        </div>
-        <div className="flex flex-col justify-end gap-10 pb-[70px] pl-2.5 max-md:pl-0">
-          <p className="max-w-[355px] text-[17px] leading-[27px] font-light tracking-[0.02em]">{works.lead}</p>
+    <Section id="works">
+      <div className="wrap relative">
+        <SectionHead title={works.heading} lead={works.lead}>
           <div className="flex gap-2.5">
-            <button type="button" onClick={() => go(-1)} aria-label="Предыдущая сборка" className="flex size-10 items-center justify-center transition-opacity hover:opacity-60">
+            <button type="button" onClick={() => go(-1)} aria-label="Предыдущая сборка" className={arrow}>
               <ChevronLeft className="size-6" strokeWidth={1.5} />
             </button>
-            <button type="button" onClick={() => go(1)} aria-label="Следующая сборка" className="flex size-10 items-center justify-center transition-opacity hover:opacity-60">
+            <button type="button" onClick={() => go(1)} aria-label="Следующая сборка" className={arrow}>
               <ChevronRight className="size-6" strokeWidth={1.5} />
             </button>
           </div>
-        </div>
+        </SectionHead>
       </div>
 
-      {/* Track: card 0 of the middle copy aligns with the left edge of the 1100 frame */}
+      {/* Track: card 0 of the middle copy starts on the container's left edge (--edge) and the row runs off the screen */}
       {/* Drag area: vertical swipes still scroll the page (touch-action: pan-y) */}
       <div
-        className="relative z-[2] w-full cursor-grab touch-pan-y overflow-hidden select-none active:cursor-grabbing"
+        className="relative w-full cursor-grab touch-pan-y overflow-hidden select-none active:cursor-grabbing"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -118,17 +101,18 @@ export function Works() {
           ref={trackRef}
           onTransitionEnd={onSlideEnd}
           className={cn(
-            "flex [--card:calc(100vw-40px)] md:[--card:550px]",
+            "flex [--card:calc(100vw-2*var(--gutter)+12px)] [--edge:max(var(--gutter),calc((100%-var(--page))/2+var(--gutter)))] md:[--card:clamp(440px,37vw,640px)]",
             animate && drag === null && "transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)]",
           )}
-          style={{ transform: `translateX(calc(max(20px, 50% - 550px) - ${count + index} * var(--card) + ${drag ?? 0}px))` }}
+          style={{ transform: `translateX(calc(var(--edge) - ${count + index} * var(--card) + ${drag ?? 0}px))` }}
         >
           {loop.map((p, i) => (
-            <li key={i} className="relative h-[472px] w-[var(--card)] shrink-0 max-md:h-[420px]" aria-hidden={i < count + index || i >= count * 2 + index}>
+            // The gap between cards is the item's own right padding, so one step is exactly --card
+            <li key={i} className="h-[420px] w-[var(--card)] shrink-0 pr-3 md:h-[clamp(440px,34vw,560px)] md:pr-5" aria-hidden={i < count + index || i >= count * 2 + index}>
               <BuildCard
                 build={p}
                 index={i % count}
-                sizes="(min-width: 768px) 550px, 100vw"
+                sizes="(min-width: 768px) 640px, 100vw"
                 tabIndex={i < count + index || i >= count * 2 + index ? -1 : 0}
                 className="size-full"
               />
@@ -137,9 +121,15 @@ export function Works() {
         </ul>
       </div>
 
-      <KeyButton href={works.all.href} tone="black" className="relative z-[2] mt-10">
-        {works.all.label}
-      </KeyButton>
-    </section>
+      {/* Every build shown is sold, so the way to buy is to order one like it */}
+      <div className="wrap relative mt-10 flex flex-wrap gap-3" data-service="Сборка ПК на заказ">
+        <KeyButton href={works.order.href} tone="accent">
+          {works.order.label}
+        </KeyButton>
+        <KeyButton href={works.all.href} tone="black">
+          {works.all.label}
+        </KeyButton>
+      </div>
+    </Section>
   );
 }

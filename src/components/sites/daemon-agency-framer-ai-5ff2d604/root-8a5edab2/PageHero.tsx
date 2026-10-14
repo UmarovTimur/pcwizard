@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { site } from "@/lib/site";
-import { Cross, KeyButton, Noise } from "../shared/primitives";
+import { KeyButton, Noise } from "../shared/primitives";
 import { PixelField } from "../shared/PixelField";
 
 export interface Crumb {
@@ -56,26 +56,25 @@ export function PageHero({
   art?: React.ReactNode;
 }) {
   return (
-    <section className="relative flex justify-center overflow-hidden pt-[150px] pb-[140px] max-md:pt-32 max-md:pb-[100px]">
+    <section className="relative overflow-hidden pt-[150px] pb-[140px] max-md:pt-32 max-md:pb-[100px]">
       <div className="absolute inset-0 bg-ink" />
-      <PixelField className="absolute inset-0 z-[1]" />
+      <PixelField className="absolute inset-0 z-[1] opacity-70" density={0.8} fade={0.3} />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(60%_50%_at_50%_100%,rgba(124,58,237,0.25),transparent)]" />
       <Noise className="z-[1]" />
       {art}
 
-      <div className="relative z-[2] flex w-full flex-col gap-8 border-t border-line px-5 pt-[30px] md:w-full md:max-w-[1100px] md:px-[30px]">
-        <Cross className="top-0 left-0" />
-        <Cross className="top-0 left-full" />
+      <div className="wrap relative z-[2] flex flex-col gap-8">
         <Breadcrumbs trail={trail} />
-        <h1 className="max-w-[900px] text-balance font-display text-[clamp(30px,6vw,80px)] leading-[1.02] uppercase">{title}</h1>
+        {/* Titles come from data (articles, catalog items), so a very long word may break rather than overflow */}
+        <h1 className="metal-text max-w-[1200px] font-display text-[clamp(30px,4.6vw,68px)] leading-[1.03] text-balance [overflow-wrap:anywhere] uppercase">{title}</h1>
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-          <div className="flex max-w-[520px] flex-col gap-5">
-            <p className="text-[17px] leading-7 font-light tracking-[0.01em] text-white/90">{lead}</p>
+          <div className="flex max-w-[640px] flex-col gap-5">
+            <p className="text-[19px] leading-[1.55] text-white/90">{lead}</p>
             {meta}
             {bullets && (
               <ul className="flex flex-wrap gap-2">
                 {bullets.map((b) => (
-                  <li key={b} className="bg-line px-3 py-2 font-pixel text-[11px] leading-[19.5px] uppercase">
+                  <li key={b} className="bg-line px-3 py-2 font-pixel text-[12px] leading-[19.5px] uppercase">
                     {b}
                   </li>
                 ))}

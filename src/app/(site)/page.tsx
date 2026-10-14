@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { faqLd } from "@/lib/site";
 import { JsonLd } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/shared/JsonLd";
 import { faq } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/root-8a5edab2/content";
-import { PixelStars } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/shared/PixelStars";
 import { Budgets } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/root-8a5edab2/Budgets";
 import { Articles } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/root-8a5edab2/Articles";
 import { Contact } from "@/components/sites/daemon-agency-framer-ai-5ff2d604/root-8a5edab2/Contact";
@@ -27,16 +26,16 @@ export default function Home() {
     <>
       <JsonLd data={faqLd(faq.items)} />
       <Header />
-      <main className="relative bg-ink">
-        {/* Sparkles scattered down the whole page; sections with their own backgrounds cover them */}
-        <PixelStars seed={7} count={44} />
+      {/* The order follows a buyer's questions: what it costs, what you have built, how it goes,
+          what the work costs, why you, who you are, the fine print, and where to write. */}
+      <main id="main" className="relative bg-ink">
         <Hero />
-        <Process />
-        <Works />
-        <Testimonials />
         <Budgets />
+        <Works />
+        <Process />
         <Pricing />
         <WhyUs />
+        <Testimonials />
         <Team />
         <Faq />
         <Articles />

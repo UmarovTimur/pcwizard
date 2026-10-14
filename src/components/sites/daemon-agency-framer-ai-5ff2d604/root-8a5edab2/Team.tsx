@@ -1,79 +1,30 @@
-"use client";
-
-import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { KeyButton, Noise, Placeholder, Tag } from "../shared/primitives";
-import { PixelCity } from "../shared/PixelCity";
-import { Reveal } from "../shared/motion";
+import { KeyButton, Placeholder, Section, SectionHead } from "../shared/primitives";
 import { team } from "./content";
 
-/**
- * Hover/focus-driven: invisible hotspots sit over each person in the group photo;
- * the active member's callout card moves to that position.
- */
+/** The team: a group photo beside the list of people — name, role and a line from each. */
 export function Team() {
-  const [active, setActive] = useState(0);
-  const member = team.members[active];
-
+  // Hidden until the examples in content.ts are replaced with real people and a photo
+  if (!team.show) return null;
   return (
-    <section id="team" className="relative flex flex-col items-center gap-10 overflow-hidden pt-[200px]">
-      <Noise />
-      {/* Drifting pixel night city above the heading */}
-      <PixelCity scene="night" className="top-0 opacity-90" />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden md:block">
-        <span className="absolute inset-y-0 left-[calc(50%-365px)] w-px bg-line" />
-        <span className="absolute inset-y-0 left-1/2 w-px bg-line" />
-        <span className="absolute inset-y-0 left-[calc(50%+365px)] w-px bg-line" />
-      </div>
-
-      <div className="relative z-[2] flex flex-col items-center gap-5 px-5 pt-[30px] text-center">
-        <Tag>{team.tag}</Tag>
-        <Reveal as="h2" className="font-display text-[34px] leading-[1.05] uppercase md:text-[56px] lg:text-[72px]">
-          {team.heading.map((l) => (
-            <span key={l} className="block">
-              {l}
-            </span>
-          ))}
-        </Reveal>
-      </div>
-
-      <div className="relative z-[2] h-[746px] w-full max-w-[1100px] max-md:h-[560px]">
-        <Placeholder label="Фото команды 1100×616" tone="dark" className="absolute inset-x-0 bottom-0 h-[616px] [mask-image:linear-gradient(180deg,transparent,#000_18%)] max-md:h-[440px]" />
-
-        {/* Callout card */}
-        <div
-          className="pointer-events-none absolute top-10 z-[3] w-[220px] transition-[left] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] max-md:left-5!"
-          style={{ left: `calc(${member.x * 100}% - 20px)` }}
-          aria-live="polite"
-        >
-          <div className="relative border-l border-white/60 pt-2.5 pr-4 pb-4 pl-4">
-            <span aria-hidden="true" className="absolute top-0 left-0 h-px w-[110px] bg-white/60" />
-            <p className="font-pixel text-[13px] leading-[24.5px] uppercase">{member.name}</p>
-            <p className="mt-[7px] font-mono text-[14px] leading-[21px] tracking-[-0.03em] text-muted">{member.role}</p>
-            <p className="mt-3 text-[17px] leading-[25.5px] font-light tracking-[0.02em]">{member.quote}</p>
-          </div>
-        </div>
-
-        {/* Hotspots */}
-        <div className="absolute inset-x-0 bottom-0 flex h-[520px]">
-          {team.members.map((m, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-label={`${m.name}, ${m.role}`}
-              aria-pressed={active === i}
-              onMouseEnter={() => setActive(i)}
-              onFocus={() => setActive(i)}
-              onClick={() => setActive(i)}
-              className={cn("h-full flex-1 cursor-pointer focus-visible:outline-1 focus-visible:-outline-offset-4 focus-visible:outline-white/40")}
-            />
-          ))}
-        </div>
-
-        <div className="absolute bottom-[50px] left-1/2 z-[3] -translate-x-1/2">
+    <Section id="team">
+      <div className="wrap relative">
+        <SectionHead title={team.heading}>
           <KeyButton href={team.cta.href}>{team.cta.label}</KeyButton>
+        </SectionHead>
+
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-5">
+          <Placeholder label="Фото команды 1600×1000" tone="dark" className="aspect-[16/10] w-full border border-line lg:aspect-auto lg:min-h-[520px]" />
+          <ul className="grid border border-line bg-panel sm:grid-cols-2 lg:grid-cols-1">
+            {team.members.map((m, i) => (
+              <li key={i} className="flex flex-col justify-center gap-1.5 border-line p-6 max-sm:not-first:border-t sm:max-lg:nth-[n+3]:border-t sm:max-lg:even:border-l md:px-8 lg:not-first:border-t">
+                <p className="font-pixel text-[13px] leading-[23px] uppercase">{m.name}</p>
+                <p className="font-mono text-[14px] leading-[21px] text-muted">{m.role}</p>
+                <p className="mt-1.5 text-[17px] leading-[1.5] text-white/85">{m.quote}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

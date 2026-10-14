@@ -7,14 +7,15 @@ export const brand = {
 };
 
 // Ссылки с "/" работают и с внутренних страниц.
-export const nav = [
+// bar — ссылка видна прямо в шапке на десктопе: "xl" с 1280px, "2xl" с 1536px. Всё меню — в кнопке.
+export const nav: { label: string; href: string; bar?: "xl" | "2xl" }[] = [
   { label: "Главная", href: "/" },
-  { label: "Игровые ПК", href: "/igrovye-pk" },
-  { label: "Сборка ПК", href: "/sborka-kompyutera" },
-  { label: "Каталог", href: "/catalog" },
-  { label: "Портфолио", href: "/portfolio" },
-  { label: "Цены", href: "/#pricing" },
-  { label: "Блог", href: "/blog" },
+  { label: "Игровые ПК", href: "/igrovye-pk", bar: "xl" },
+  { label: "Сборка ПК", href: "/sborka-kompyutera", bar: "2xl" },
+  { label: "Каталог", href: "/catalog", bar: "xl" },
+  { label: "Портфолио", href: "/portfolio", bar: "xl" },
+  { label: "Цены", href: "/#pricing", bar: "xl" },
+  { label: "Блог", href: "/blog", bar: "2xl" },
   { label: "Контакты", href: "#contact" },
 ];
 
@@ -62,7 +63,6 @@ export const capabilities = {
 };
 
 export const process = {
-  marquee: "ОДНИ ИЗ САМЫХ НИЗКИХ ЦЕН НА РЫНКЕ",
   heading: "Как проходит сборка и\u00a0тестирование",
   // sticker — наклейка шага (public/images/stickers/<sticker>.png)
   steps: [
@@ -103,11 +103,17 @@ export interface Build {
 
 const ready = ["Все кабели в комплекте", "Драйверы установлены", "Windows 11 Pro 64-bit", "Counter-Strike 2 установлен", "Всё проверено и готово к работе"];
 
-export const works: { tag: string; heading: string; lead: string; all: { label: string; href: string }; projects: Build[] } = {
-  tag: "Портфолио",
+export const works: {
+  heading: string;
+  lead: string;
+  all: { label: string; href: string };
+  order: { label: string; href: string };
+  projects: Build[];
+} = {
   heading: "Наши работы",
   lead: "Компьютеры, которые мы собрали: в продаже и уже проданные. Нажмите на сборку, чтобы посмотреть фото, конфигурацию и цену.",
   all: { label: "Все работы", href: "/portfolio" },
+  order: { label: "Хочу похожую", href: "#contact" }, // открывает попап с заявкой
   projects: [
     {
       slug: "i5-12400f-rtx-2070-super",
@@ -223,6 +229,8 @@ export const formatBuildPrice = (p: { usd: number; uzs: number }) => `${p.usd} $
 export const getBuild = (slug: string) => works.projects.find((b) => b.slug === slug);
 
 export const budgets = {
+  // Бегущая строка над секцией, сразу под первым экраном.
+  marquee: "ОДНИ ИЗ САМЫХ НИЗКИХ ЦЕН НА РЫНКЕ",
   tag: "Сколько стоит игровой ПК в 2026",
   heading: "Сборки по бюджету: 7\u00a0/ 10\u00a0/ 15\u00a0/ 25\u00a0млн\u00a0сум",
   lead: "Типовые конфигурации, от которых мы отталкиваемся. Каждую подстраиваем под ваши игры, монитор и цены на день заказа.",
@@ -244,8 +252,11 @@ export const caseStudy = {
   logos: ["Бренд 1", "Бренд 2", "Бренд 3", "Бренд 4", "Бренд 5"],
 };
 
-// ЗАМЕНИТЬ: реальные отзывы клиентов.
-export const testimonials = [
+// ЗАМЕНИТЬ: реальные отзывы клиентов. Пока здесь примеры, секция скрыта: впишите отзывы и поставьте show: true.
+export const testimonials = {
+  show: false,
+  heading: "Отзывы клиентов",
+  items: [
   {
     title: "Короткий заголовок отзыва клиента",
     text: "Текст отзыва: какой компьютер собрали, как прошёл подбор, сроки и впечатления после нескольких недель работы.",
@@ -264,21 +275,40 @@ export const testimonials = [
     name: "Имя Ф.",
     role: "Апгрейд",
   },
-];
+  ],
+};
 
-// ЗАМЕНИТЬ: цены — примеры. Переключатель показывает цену в сумах или долларах.
-export const pricing = {
-  tag: "Цены",
+export interface Plan {
+  name: string;
+  text: string;
+  price: { uzs: number; usd: number };
+  /** Подпись под ценой: за что она. */
+  unit: string;
+  cta: { label: string; href: string };
+  /** Услуга, которая сама выберется в форме заявки. */
+  service?: string;
+  /** Главный тариф: выделен рамкой и яркой кнопкой. */
+  featured?: boolean;
+  features: string[];
+}
+
+// Цены на работы назвал владелец 14.10.2026. Доллары — по курсу из портфолио (≈ 11 900 сум за $).
+// Переключатель показывает цену в сумах или долларах.
+export const pricing: {
+  heading: string;
+  lead: string;
+  plans: Plan[];
+  banner: { heading: string; text: string; cta: { label: string; href: string } };
+} = {
   heading: "Прозрачные цены на услуги",
   lead: "Стоимость работ без учёта комплектующих.",
-  currencyNote: "сум или $",
   plans: [
     {
       name: "Диагностика и ремонт",
       text: "Найдём причину поломки и починим компьютер или ноутбук.",
-      price: { uzs: 150000, usd: 12 },
-      unit: ["ОТ /", "УСЛУГИ"],
-      cta: { label: "Записаться", href: "#contact", variant: "dots" as const },
+      price: { uzs: 100000, usd: 8 },
+      unit: "за услугу",
+      cta: { label: "Записаться", href: "#contact" },
       features: [
         "Полная диагностика",
         "Чистка от пыли",
@@ -292,9 +322,11 @@ export const pricing = {
     {
       name: "Сборка на заказ",
       text: "Подберём комплектующие и соберём компьютер под ключ.",
-      price: { uzs: 500000, usd: 40 },
-      unit: ["ОТ /", "СБОРКИ"],
-      cta: { label: "Заказать сборку", href: "#contact", variant: "gradient" as const },
+      price: { uzs: 400000, usd: 34 },
+      unit: "за сборку",
+      cta: { label: "Заказать сборку", href: "#contact" },
+      service: "Сборка ПК на заказ",
+      featured: true,
       features: [
         "Подбор под задачи и бюджет",
         "Проверка совместимости",
@@ -314,27 +346,28 @@ export const pricing = {
 };
 
 export const whyUs = {
-  tag: "Почему мы",
   heading: "Собираем так, как собрали бы себе",
   text: "Подбираем детали без переплат, честно объясняем, что стоит менять, а что нет, и проверяем каждую сборку перед выдачей.",
   bigWord: ["ПОЧЕМУ", "МЫ?"],
-  meters: [
-    { label: "Качество", value: 0.95 },
-    { label: "Скорость", value: 0.8 },
-    { label: "Гарантия", value: 1 },
-    { label: "Цена", value: 0.85 },
+  reasons: [
+    // Формулировки взяты из текстов сайта: ответы в «Частых вопросах» и шаги «Как проходит сборка».
+    { title: "Гарантия 30 дней", text: "На сборку и на выполненные работы." },
+    { title: "Тест под нагрузкой при вас", text: "Показываем компьютер в работе при вас." },
+    { title: "Без переплат", text: "Объясняем, за что вы платите в каждой детали." },
+    { title: "По всему Узбекистану", text: "Мы в Ташкенте и работаем по всему Узбекистану." },
   ],
 };
 
-// ЗАМЕНИТЬ: имена и должности сотрудников.
+// ЗАМЕНИТЬ: имена и должности сотрудников. Пока здесь примеры и нет фото, секция скрыта:
+// впишите людей, поставьте фото в Team.tsx и show: true.
 export const team = {
-  tag: "Команда",
-  heading: ["Сборщики, мастера", "и консультанты"],
+  show: false,
+  heading: "Сборщики, мастера и\u00a0консультанты",
   members: [
-    { name: "Имя Фамилия", role: "Мастер по сборке", quote: "«Хорошая сборка — это когда о компьютере не вспоминаешь».", x: 0.13 },
-    { name: "Имя Фамилия", role: "Инженер по ремонту", quote: "«Сначала находим причину, потом меняем детали».", x: 0.38 },
-    { name: "Имя Фамилия", role: "Консультант", quote: "«Подбираем то, что нужно вам, а не то, что дороже».", x: 0.62 },
-    { name: "Имя Фамилия", role: "Менеджер", quote: "«На связи с момента заявки до выдачи».", x: 0.86 },
+    { name: "Имя Фамилия", role: "Мастер по сборке", quote: "«Хорошая сборка — это когда о компьютере не вспоминаешь»." },
+    { name: "Имя Фамилия", role: "Инженер по ремонту", quote: "«Сначала находим причину, потом меняем детали»." },
+    { name: "Имя Фамилия", role: "Консультант", quote: "«Подбираем то, что нужно вам, а не то, что дороже»." },
+    { name: "Имя Фамилия", role: "Менеджер", quote: "«На связи с момента заявки до выдачи»." },
   ],
   cta: { label: "Связаться", href: "#contact" },
 };
@@ -367,6 +400,8 @@ export const contact = {
   tag: "Связаться",
   heading: "Расскажите, какой компьютер вам нужен",
   lead: "Оставьте заявку — перезвоним, уточним детали и предложим варианты.",
+  // Подпись над телефоном и соцсетями рядом с формой.
+  direct: "Или сразу позвоните или напишите:",
   fields: {
     name: { label: "Имя", placeholder: "Ваше имя" },
     phone: { label: "Телефон", placeholder: "+998 __ ___ __ __" },
@@ -379,7 +414,14 @@ export const contact = {
     message: { label: "Что нужно сделать?", placeholder: "Опишите задачу…" },
   },
   submit: "Отправить",
+  sending: "Отправляем…",
   sent: "Заявка отправлена. Мы свяжемся с вами.",
+  // Если заявка не ушла с сайта (бот не настроен или Telegram не ответил), её можно отправить из своего Telegram.
+  fallback: {
+    text: "С сайта заявка не ушла. Отправьте её в Telegram: текст уже набран, останется нажать «Отправить».",
+    label: "Отправить в Telegram",
+    call: "Или позвоните:",
+  },
   achievement: { title: "Достижение получено", text: "Заявка отправлена · +100 XP" },
 };
 
@@ -398,9 +440,8 @@ export const footer = {
     { label: "Портфолио", href: "/portfolio" },
   ],
   socials: [
-    { label: "Telegram", href: "https://t.me/PcWizard_uz" },
-    { label: "Instagram", href: "https://instagram.com/PcWizard_uz" },
-  ],
+    { label: "Telegram", href: "https://t.me/PcWizard_uz", icon: "telegram" },
+    { label: "Instagram", href: "https://instagram.com/PcWizard_uz", icon: "instagram" },
+  ] as { label: string; href: string; icon: "telegram" | "instagram" }[],
   rights: "PcWizard_uz. Все права защищены.",
-  legal: ["Условия", "Политика конфиденциальности"],
 };

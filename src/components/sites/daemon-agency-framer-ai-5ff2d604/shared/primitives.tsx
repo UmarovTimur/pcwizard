@@ -46,6 +46,55 @@ export function Noise({ className }: { className?: string }) {
   return <div aria-hidden="true" className={cn("noise", className)} />;
 }
 
+/** A page section: hairline on top, grain, and the shared vertical rhythm. Content sits in a `wrap`. */
+export function Section({ id, label, className, children }: { id?: string; label?: string; className?: string; children: React.ReactNode }) {
+  return (
+    <section id={id} aria-label={label} className={cn("relative overflow-hidden border-t border-line section-y", className)}>
+      <Noise />
+      {children}
+    </section>
+  );
+}
+
+/**
+ * Section header: the heading on the left; the lead and any actions on the right, level with
+ * the heading's last line (stacked below xl). `stacked` keeps them under the heading at every
+ * width, for long headings that need the whole row.
+ */
+export function SectionHead({
+  tag,
+  title,
+  lead,
+  children,
+  className,
+  asideClassName,
+  stacked = false,
+}: {
+  tag?: string;
+  title: React.ReactNode;
+  lead?: string;
+  children?: React.ReactNode;
+  className?: string;
+  /** Extra classes for the right-hand block (lead and actions). */
+  asideClassName?: string;
+  stacked?: boolean;
+}) {
+  return (
+    <div className={cn("relative mb-10 flex flex-col gap-6 md:mb-14", !stacked && "xl:flex-row xl:items-end xl:justify-between xl:gap-16", className)}>
+      <div className="flex min-w-0 flex-col gap-5">
+        {tag && <Tag>{tag}</Tag>}
+        <h2 className="metal-text font-display text-[clamp(34px,4.4vw,64px)] leading-[1.02] text-balance uppercase">{title}</h2>
+      </div>
+      {(lead || children) && (
+        <div className={cn("flex shrink-0 flex-col items-start gap-5", stacked ? "max-w-[60ch]" : "max-w-[460px] xl:w-[36%] xl:pb-1.5", asideClassName)}>
+          {lead && <p className="text-[18px] leading-[1.55] text-white/80">{lead}</p>}
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /** Mono label chip with tiny corner brackets. */
 export function Tag({ children, tone = "dark", className }: { children: React.ReactNode; tone?: "dark" | "light"; className?: string }) {
   const dot = tone === "dark" ? "bg-white" : "bg-ink";
@@ -96,6 +145,10 @@ interface ButtonProps {
   children: React.ReactNode;
   /** accent: violet gradient face with a neon glow, for the main CTA. */
   tone?: "white" | "black" | "accent";
+  /** Opens the link in a new tab (other sites). */
+  external?: boolean;
+  /** Button only: greyed out and not clickable. */
+  disabled?: boolean;
   className?: string;
 }
 
@@ -129,13 +182,13 @@ function PixelArrows() {
  * Physical-key style button. Hover: the label fades out and a marching pixel
  * arrow fades in. Press: the face drops into the housing, hiding its bottom lip.
  */
-export function KeyButton({ href, children, tone = "white", className }: ButtonProps) {
+export function KeyButton({ href, children, tone = "white", external = false, disabled = false, className }: ButtonProps) {
   const Tag = href ? "a" : "button";
   return (
     <Tag
-      {...(href ? { href } : { type: "submit" as const })}
+      {...(href ? { href, ...(external && { target: "_blank", rel: "noopener noreferrer" }) } : { type: "submit" as const, disabled })}
       className={cn(
-        "group relative inline-flex h-14 w-fit cursor-pointer overflow-hidden",
+        "group relative inline-flex h-14 w-fit cursor-pointer overflow-hidden disabled:pointer-events-none disabled:opacity-60",
         tone === "accent"
           ? "shadow-[0_0_14px_rgba(168,85,247,0.3),0_10px_8px_-1px_rgba(0,0,0,0.35)] transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(168,85,247,0.5),0_10px_8px_-1px_rgba(0,0,0,0.35)]"
           : "shadow-[0_0.72px_0.29px_-0.17px_rgba(84,84,84,0.06),0_2px_0.8px_-0.33px_rgba(84,84,84,0.11),0_5px_2px_-0.5px_rgba(84,84,84,0.15),0_10px_8px_-1px_rgba(0,0,0,0.25)]",
@@ -187,7 +240,7 @@ export function BarButton({ href, children, variant }: { href: string; children:
         "relative flex h-[62px] w-full items-center justify-center font-pixel text-[13px] text-white transition-opacity hover:opacity-90",
         variant === "gradient"
           ? "bg-[radial-gradient(58%_306%_at_0%_79%,rgb(124,58,237)_3%,rgb(147,51,234)_40%,rgb(217,70,239)_75%)]"
-          : "bg-[radial-gradient(rgba(255,255,255,0.18)_1px,transparent_1px)] bg-[size:6px_6px]",
+          : "border border-white/20 bg-[radial-gradient(rgba(255,255,255,0.18)_1px,transparent_1px)] bg-[size:6px_6px]",
       )}
     >
       <CornerCrosses />

@@ -7,7 +7,7 @@ import { ArrowRight, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { site } from "@/lib/site";
 import { CONDITION_LABEL, formatPrice, STOCK_LABEL, type CatalogGroup, type CatalogRow, type Stock } from "@/lib/catalog-shared";
-import { Cross } from "../shared/primitives";
+import { innerHeading } from "../shared/Prose";
 
 const STOCK_DOT: Record<Stock, string> = {
   in_stock: "bg-[#4ade80] shadow-[0_0_6px_rgba(74,222,128,0.8)]",
@@ -128,11 +128,9 @@ export function CatalogTable({ groups }: { groups: CatalogGroup[] }) {
 
   if (!total) {
     return (
-      <div className="relative flex flex-col items-start gap-5 border-y border-line py-12">
-        <Cross className="top-0 left-0" />
-        <Cross className="top-0 left-full" />
-        <p className="font-display text-[28px] leading-[1.1] uppercase md:text-[36px]">Каталог скоро наполнится</p>
-        <p className="max-w-[520px] text-[17px] leading-7 font-light text-white/80">
+      <div className="flex flex-col items-start gap-5 border border-line bg-panel p-6 md:p-10">
+        <p className={innerHeading}>Каталог скоро наполнится</p>
+        <p className="max-w-[60ch] text-[18px] leading-[1.55] text-white/80">
           Пока мы добавляем товары, просто напишите, какая деталь нужна, — проверим наличие и пришлём цену.
         </p>
         <a href={site.telegram} target="_blank" rel="noopener noreferrer" className="font-mono text-[15px] underline decoration-white/60 underline-offset-[6px] hover:text-white/70">
@@ -146,7 +144,7 @@ export function CatalogTable({ groups }: { groups: CatalogGroup[] }) {
     <div className="flex flex-col gap-10">
       {/* Toolbar: sticks under the header while the table scrolls */}
       <div className="sticky top-[76px] z-10 -mx-5 flex flex-col gap-3 border-y border-line bg-ink/90 px-5 py-3 backdrop-blur-md md:top-[84px] md:mx-0 md:flex-row md:items-center md:gap-5 md:px-4">
-        <label className="flex shrink-0 items-center gap-2 border border-line bg-ink-2 px-3 md:w-[300px]">
+        <label className="flex shrink-0 items-center gap-2 border border-line bg-ink-2 px-3 transition-colors focus-within:border-violet md:w-[300px]">
           <Search className="size-4 text-white/50" strokeWidth={1.5} aria-hidden="true" />
           <span className="sr-only">Поиск по каталогу</span>
           <input
@@ -193,7 +191,7 @@ export function CatalogTable({ groups }: { groups: CatalogGroup[] }) {
         <section key={g.id} id={g.slug} aria-labelledby={`cat-${g.slug}`} className="scroll-mt-[200px] md:scroll-mt-[160px]">
           <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 pb-4">
             <div className="flex flex-col gap-1">
-              <h2 id={`cat-${g.slug}`} className="font-display text-[28px] leading-[1.05] uppercase md:text-[36px]">
+              <h2 id={`cat-${g.slug}`} className={innerHeading}>
                 {g.title}
               </h2>
               {g.description && <p className="max-w-[640px] text-[15px] leading-6 font-light text-white/65">{g.description}</p>}
